@@ -65,10 +65,10 @@ const App: React.FC = () => {
               <Route path="banners" element={<BannerList />} />
               <Route path="faqs" element={<FAQList />} />
               <Route path="settings" element={<SiteSettings />} />
-              <Route path="blog" element={<div className="p-6">Blog Management - Coming Soon</div>} />
+              <Route path="blog" element={<BlogList />} />
               <Route path="instagram" element={<div className="p-6">Instagram Feed - Coming Soon</div>} />
               <Route path="coupons" element={<CouponList />} />
-              <Route path="newsletter" element={<div className="p-6">Newsletter - Coming Soon</div>} />
+              <Route path="newsletter" element={<NewsletterList />} />
               <Route path="inventory" element={<InventoryList />} />
               <Route path="vendors" element={<div className="p-6">Vendor Management - Coming Soon</div>} />
               <Route path="seo" element={<div className="p-6">SEO Management - Coming Soon</div>} />
