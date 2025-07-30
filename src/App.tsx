@@ -13,6 +13,9 @@ import UserList from './pages/Users/UserList';
 import TransactionList from './pages/Transactions/TransactionList';
 import InventoryList from './pages/Inventory/InventoryList';
 import CouponList from './pages/Coupons/CouponList';
+import BannerList from './pages/Banners/BannerList';
+import FAQList from './pages/FAQ/FAQList';
+import SiteSettings from './pages/Settings/SiteSettings';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
