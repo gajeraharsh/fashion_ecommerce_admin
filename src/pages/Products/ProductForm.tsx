@@ -387,14 +387,16 @@ const ProductForm: React.FC = () => {
                   </Form.Item>
 
                   <Form.Item name="description" label="Full Description">
-                    <ReactQuill
-                      theme="snow"
-                      value={description}
-                      onChange={setDescription}
-                      modules={quillModules}
-                      formats={quillFormats}
-                      style={{ height: '200px', marginBottom: '50px' }}
-                    />
+                    <div>
+                      <ReactQuill
+                        theme="snow"
+                        value={description}
+                        onChange={setDescription}
+                        modules={quillModules}
+                        formats={quillFormats}
+                        style={{ height: '200px', marginBottom: '50px' }}
+                      />
+                    </div>
                   </Form.Item>
 
                   <Row gutter={[16, 0]}>
