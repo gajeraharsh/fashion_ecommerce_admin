@@ -9,334 +9,262 @@ import {
   Card,
   Row,
   Col,
+  Statistic,
+  DatePicker,
   Modal,
   Form,
-  Switch,
   message,
-  Statistic,
   Progress,
-  Tabs,
-  List,
-  Avatar,
+  Timeline,
+  Badge,
   Tooltip,
+  Dropdown,
+  Menu,
   Typography,
-  DatePicker,
-  Upload,
+  Avatar,
+  List,
+  Tabs,
 } from 'antd';
 import {
   PlusOutlined,
+  SendOutlined,
+  EyeOutlined,
   EditOutlined,
   DeleteOutlined,
+  DownloadOutlined,
+  FilterOutlined,
   SearchOutlined,
   MailOutlined,
-  SendOutlined,
   UserOutlined,
-  BarChartOutlined,
-  EyeOutlined,
-  HeartOutlined,
-  ShareAltOutlined,
-  CloudUploadOutlined,
-  FileExcelOutlined,
   CalendarOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  SyncOutlined,
+  BarChartOutlined,
+  FileExcelOutlined,
+  CopyOutlined,
+  PauseCircleOutlined,
+  PlayCircleOutlined,
+  UserAddOutlined,
+  UserDeleteOutlined,
 } from '@ant-design/icons';
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
 } from 'recharts';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 const { Search } = Input;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 const { TextArea } = Input;
-// Using modern Tabs API
 const { Title } = Typography;
+
+interface Newsletter {
+  id: string;
+  name: string;
+  subject: string;
+  status: 'draft' | 'sent' | 'scheduled' | 'sending';
+  subscribers: number;
+  openRate: number;
+  clickRate: number;
+  sentDate?: string;
+  scheduledDate?: string;
+  content: string;
+  template: string;
+  tags: string[];
+}
 
 interface Subscriber {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  status: 'active' | 'unsubscribed' | 'bounced' | 'pending';
-  subscribedAt: string;
-  lastEngagement: string;
-  tags: string[];
-  source: string;
-  engagement: {
-    opens: number;
-    clicks: number;
-    purchases: number;
-  };
-}
-
-interface Campaign {
-  id: string;
   name: string;
-  subject: string;
-  content: string;
-  status: 'draft' | 'scheduled' | 'sent' | 'sending';
-  scheduledAt?: string;
-  sentAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  recipients: number;
-  opens: number;
-  clicks: number;
-  unsubscribes: number;
-  bounces: number;
-  openRate: number;
-  clickRate: number;
+  status: 'active' | 'unsubscribed' | 'bounced';
+  subscribeDate: string;
+  lastActivity: string;
+  source: string;
   tags: string[];
-  template: string;
+  location: string;
 }
 
 const NewsletterList: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('campaigns');
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [campaignModalVisible, setCampaignModalVisible] = useState(false);
-  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
-  const [content, setContent] = useState('');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [activeTab, setActiveTab] = useState('campaigns');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingNewsletter, setEditingNewsletter] = useState<Newsletter | null>(null);
   const [form] = Form.useForm();
 
+  // Mock data
   useEffect(() => {
-    // Mock data
-    const mockCampaigns: Campaign[] = [
+    setNewsletters([
       {
-        id: 'camp_001',
-        name: 'Summer Sale Newsletter',
-        subject: '🌞 Summer Sale - Up to 70% Off Fashion Favorites!',
-        content: '<h2>Summer Sale is Here!</h2><p>Don\'t miss out on our biggest sale of the year...</p>',
+        id: '1',
+        name: 'Weekly Fashion Trends',
+        subject: 'Latest Spring Collection 2024',
         status: 'sent',
-        sentAt: '2024-01-07T10:00:00Z',
-        createdAt: '2024-01-05T14:00:00Z',
-        updatedAt: '2024-01-07T10:00:00Z',
-        recipients: 5234,
-        opens: 2156,
-        clicks: 432,
-        unsubscribes: 23,
-        bounces: 45,
-        openRate: 41.2,
-        clickRate: 20.0,
-        tags: ['sale', 'summer', 'fashion'],
-        template: 'sale-template',
+        subscribers: 15420,
+        openRate: 24.5,
+        clickRate: 3.2,
+        sentDate: '2024-01-15',
+        content: 'Newsletter content...',
+        template: 'fashion-weekly',
+        tags: ['weekly', 'fashion', 'trends'],
       },
       {
-        id: 'camp_002',
-        name: 'New Collection Announcement',
-        subject: '✨ New Arrivals - Fresh Styles Just Landed',
-        content: '<h2>New Collection</h2><p>Discover our latest fashion pieces...</p>',
-        status: 'sent',
-        sentAt: '2024-01-05T12:00:00Z',
-        createdAt: '2024-01-03T16:00:00Z',
-        updatedAt: '2024-01-05T12:00:00Z',
-        recipients: 5234,
-        opens: 1987,
-        clicks: 298,
-        unsubscribes: 12,
-        bounces: 38,
-        openRate: 38.0,
-        clickRate: 15.0,
-        tags: ['new arrivals', 'collection'],
-        template: 'product-template',
-      },
-      {
-        id: 'camp_003',
-        name: 'Weekly Fashion Tips',
-        subject: 'Your Weekly Style Guide - 5 Trending Looks',
-        content: '<h2>This Week\'s Style Tips</h2><p>Get inspired with these trending looks...</p>',
-        status: 'draft',
-        createdAt: '2024-01-06T10:00:00Z',
-        updatedAt: '2024-01-07T08:00:00Z',
-        recipients: 0,
-        opens: 0,
-        clicks: 0,
-        unsubscribes: 0,
-        bounces: 0,
+        id: '2',
+        name: 'Sale Announcement',
+        subject: 'Up to 50% Off Everything!',
+        status: 'scheduled',
+        subscribers: 18200,
         openRate: 0,
         clickRate: 0,
-        tags: ['tips', 'style', 'weekly'],
-        template: 'content-template',
+        scheduledDate: '2024-01-20',
+        content: 'Sale content...',
+        template: 'sale-promo',
+        tags: ['sale', 'promotion'],
       },
-    ];
+      {
+        id: '3',
+        name: 'New Arrivals',
+        subject: 'Fresh Styles Just Landed',
+        status: 'draft',
+        subscribers: 0,
+        openRate: 0,
+        clickRate: 0,
+        content: 'New arrivals content...',
+        template: 'new-arrivals',
+        tags: ['new', 'arrivals'],
+      },
+    ]);
 
-    const mockSubscribers: Subscriber[] = [
+    setSubscribers([
       {
-        id: 'sub_001',
-        email: 'sarah.johnson@example.com',
-        firstName: 'Sarah',
-        lastName: 'Johnson',
+        id: '1',
+        email: 'user1@example.com',
+        name: 'John Doe',
         status: 'active',
-        subscribedAt: '2023-12-15T10:00:00Z',
-        lastEngagement: '2024-01-07T09:30:00Z',
-        tags: ['vip', 'fashion-lover'],
-        source: 'website',
-        engagement: {
-          opens: 45,
-          clicks: 23,
-          purchases: 8,
-        },
+        subscribeDate: '2023-12-01',
+        lastActivity: '2024-01-15',
+        source: 'Website',
+        tags: ['premium', 'fashion'],
+        location: 'New York, US',
       },
       {
-        id: 'sub_002',
-        email: 'mike.chen@example.com',
-        firstName: 'Mike',
-        lastName: 'Chen',
+        id: '2',
+        email: 'user2@example.com',
+        name: 'Jane Smith',
         status: 'active',
-        subscribedAt: '2024-01-01T14:00:00Z',
-        lastEngagement: '2024-01-06T16:20:00Z',
-        tags: ['new-subscriber'],
-        source: 'social-media',
-        engagement: {
-          opens: 12,
-          clicks: 5,
-          purchases: 2,
-        },
+        subscribeDate: '2023-11-15',
+        lastActivity: '2024-01-14',
+        source: 'Social Media',
+        tags: ['regular', 'sales'],
+        location: 'Los Angeles, US',
       },
       {
-        id: 'sub_003',
-        email: 'emma.davis@example.com',
-        firstName: 'Emma',
-        lastName: 'Davis',
+        id: '3',
+        email: 'user3@example.com',
+        name: 'Bob Johnson',
         status: 'unsubscribed',
-        subscribedAt: '2023-11-20T08:00:00Z',
-        lastEngagement: '2023-12-28T11:15:00Z',
+        subscribeDate: '2023-10-20',
+        lastActivity: '2024-01-10',
+        source: 'Email Campaign',
         tags: ['inactive'],
-        source: 'popup',
-        engagement: {
-          opens: 8,
-          clicks: 2,
-          purchases: 0,
-        },
+        location: 'Chicago, US',
       },
-    ];
-
-    setCampaigns(mockCampaigns);
-    setSubscribers(mockSubscribers);
+    ]);
   }, []);
 
-  const getStatusColor = (status: string) => {
-    const colors = {
-      draft: 'orange',
-      scheduled: 'blue',
-      sent: 'green',
-      sending: 'purple',
-      active: 'green',
-      unsubscribed: 'red',
-      bounced: 'volcano',
-      pending: 'gold',
-    };
-    return colors[status as keyof typeof colors] || 'default';
-  };
+  const filteredNewsletters = newsletters.filter(newsletter => {
+    const matchesSearch = newsletter.name.toLowerCase().includes(searchText.toLowerCase()) ||
+                         newsletter.subject.toLowerCase().includes(searchText.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || newsletter.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
-  const getStatusIcon = (status: string) => {
-    const icons = {
-      draft: <EditOutlined />,
-      scheduled: <CalendarOutlined />,
-      sent: <CheckCircleOutlined />,
-      sending: <SyncOutlined spin />,
-      active: <CheckCircleOutlined />,
-      unsubscribed: <CloseCircleOutlined />,
-      bounced: <CloseCircleOutlined />,
-      pending: <SyncOutlined />,
-    };
-    return icons[status as keyof typeof icons] || <SyncOutlined />;
-  };
+  const filteredSubscribers = subscribers.filter(subscriber => {
+    const matchesSearch = subscriber.email.toLowerCase().includes(searchText.toLowerCase()) ||
+                         subscriber.name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || subscriber.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
-  const handleCreateCampaign = () => {
-    setEditingCampaign(null);
+  const handleCreateNewsletter = () => {
+    setEditingNewsletter(null);
     form.resetFields();
-    setContent('');
-    setCampaignModalVisible(true);
+    setIsModalVisible(true);
   };
 
-  const handleEditCampaign = (campaign: Campaign) => {
-    setEditingCampaign(campaign);
-    setContent(campaign.content);
-    form.setFieldsValue(campaign);
-    setCampaignModalVisible(true);
+  const handleEditNewsletter = (newsletter: Newsletter) => {
+    setEditingNewsletter(newsletter);
+    form.setFieldsValue(newsletter);
+    setIsModalVisible(true);
   };
 
-  const handleSaveCampaign = async (values: any) => {
+  const handleSaveNewsletter = async (values: any) => {
+    setLoading(true);
     try {
-      const campaignData: Campaign = {
-        id: editingCampaign?.id || `camp_${Date.now()}`,
-        ...values,
-        content,
-        recipients: editingCampaign?.recipients || 0,
-        opens: editingCampaign?.opens || 0,
-        clicks: editingCampaign?.clicks || 0,
-        unsubscribes: editingCampaign?.unsubscribes || 0,
-        bounces: editingCampaign?.bounces || 0,
-        openRate: editingCampaign?.openRate || 0,
-        clickRate: editingCampaign?.clickRate || 0,
-        createdAt: editingCampaign?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      if (editingCampaign) {
-        setCampaigns(campaigns.map(c => c.id === editingCampaign.id ? campaignData : c));
-        message.success('Campaign updated successfully');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      if (editingNewsletter) {
+        setNewsletters(prev => prev.map(item => 
+          item.id === editingNewsletter.id ? { ...item, ...values } : item
+        ));
+        message.success('Newsletter updated successfully!');
       } else {
-        setCampaigns([campaignData, ...campaigns]);
-        message.success('Campaign created successfully');
+        const newNewsletter: Newsletter = {
+          id: String(Date.now()),
+          ...values,
+          status: 'draft',
+          subscribers: 0,
+          openRate: 0,
+          clickRate: 0,
+        };
+        setNewsletters(prev => [...prev, newNewsletter]);
+        message.success('Newsletter created successfully!');
       }
-
-      setCampaignModalVisible(false);
-      form.resetFields();
-      setContent('');
+      
+      setIsModalVisible(false);
     } catch (error) {
-      message.error('Failed to save campaign');
+      message.error('Failed to save newsletter');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSendCampaign = (campaign: Campaign) => {
-    Modal.confirm({
-      title: 'Send Campaign',
-      content: `Are you sure you want to send "${campaign.name}" to ${subscribers.filter(s => s.status === 'active').length} subscribers?`,
-      onOk: () => {
-        setCampaigns(campaigns.map(c => 
-          c.id === campaign.id ? { 
-            ...c, 
-            status: 'sent',
-            sentAt: new Date().toISOString(),
-            recipients: subscribers.filter(s => s.status === 'active').length
-          } : c
-        ));
-        message.success('Campaign sent successfully');
-      },
-    });
+  const handleDeleteNewsletter = async (id: string) => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setNewsletters(prev => prev.filter(item => item.id !== id));
+      message.success('Newsletter deleted successfully!');
+    } catch (error) {
+      message.error('Failed to delete newsletter');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const campaignColumns = [
     {
       title: 'Campaign',
-      key: 'campaign',
-      render: (record: Campaign) => (
+      dataIndex: 'name',
+      key: 'name',
+      render: (text: string, record: Newsletter) => (
         <div>
-          <div className="font-medium text-gray-900 mb-1">{record.name}</div>
-          <div className="text-sm text-gray-600">{record.subject}</div>
-          <div className="flex space-x-1 mt-2">
-            {record.tags.map(tag => (
-              <Tag key={tag} size="small">{tag}</Tag>
-            ))}
-          </div>
+          <div className="font-semibold">{text}</div>
+          <div className="text-sm text-gray-500">{record.subject}</div>
         </div>
       ),
     },
@@ -344,95 +272,63 @@ const NewsletterList: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
-        <Tag color={getStatusColor(status)} icon={getStatusIcon(status)}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
+      render: (status: string) => {
+        const colors = {
+          draft: 'default',
+          sent: 'green',
+          scheduled: 'blue',
+          sending: 'orange',
+        };
+        return <Tag color={colors[status as keyof typeof colors]}>{status.toUpperCase()}</Tag>;
+      },
     },
     {
-      title: 'Recipients',
-      dataIndex: 'recipients',
-      key: 'recipients',
-      render: (recipients: number) => (
-        <div className="text-center">
-          <div className="text-lg font-semibold">{recipients.toLocaleString()}</div>
-        </div>
-      ),
+      title: 'Subscribers',
+      dataIndex: 'subscribers',
+      key: 'subscribers',
+      render: (count: number) => count.toLocaleString(),
     },
     {
-      title: 'Performance',
-      key: 'performance',
-      render: (record: Campaign) => (
-        <div className="text-center">
-          <div className="flex justify-between text-sm">
-            <Tooltip title="Open Rate">
-              <span><EyeOutlined /> {record.openRate.toFixed(1)}%</span>
-            </Tooltip>
-            <Tooltip title="Click Rate">
-              <span><ShareAltOutlined /> {record.clickRate.toFixed(1)}%</span>
-            </Tooltip>
-          </div>
-          <div className="text-xs text-gray-500 mt-1">
-            {record.opens} opens • {record.clicks} clicks
-          </div>
-        </div>
-      ),
+      title: 'Open Rate',
+      dataIndex: 'openRate',
+      key: 'openRate',
+      render: (rate: number) => `${rate}%`,
+    },
+    {
+      title: 'Click Rate',
+      dataIndex: 'clickRate',
+      key: 'clickRate',
+      render: (rate: number) => `${rate}%`,
     },
     {
       title: 'Date',
       key: 'date',
-      render: (record: Campaign) => (
-        <div className="text-sm">
-          {record.sentAt ? (
-            <div>
-              <div>Sent:</div>
-              <div>{new Date(record.sentAt).toLocaleDateString()}</div>
-            </div>
-          ) : (
-            <div>
-              <div>Created:</div>
-              <div>{new Date(record.createdAt).toLocaleDateString()}</div>
-            </div>
-          )}
-        </div>
-      ),
+      render: (record: Newsletter) => {
+        if (record.status === 'sent' && record.sentDate) {
+          return <span>Sent: {record.sentDate}</span>;
+        }
+        if (record.status === 'scheduled' && record.scheduledDate) {
+          return <span>Scheduled: {record.scheduledDate}</span>;
+        }
+        return <span>-</span>;
+      },
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (record: Campaign) => (
-        <Space>
-          {record.status === 'draft' && (
-            <Tooltip title="Send Campaign">
-              <Button
-                type="text"
-                icon={<SendOutlined />}
-                onClick={() => handleSendCampaign(record)}
-              />
-            </Tooltip>
-          )}
-          <Tooltip title="View Analytics">
-            <Button
-              type="text"
-              icon={<BarChartOutlined />}
-            />
+      render: (record: Newsletter) => (
+        <Space size="small">
+          <Tooltip title="View">
+            <Button size="small" icon={<EyeOutlined />} />
           </Tooltip>
           <Tooltip title="Edit">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => handleEditCampaign(record)}
-              disabled={record.status === 'sent'}
-            />
+            <Button size="small" icon={<EditOutlined />} onClick={() => handleEditNewsletter(record)} />
+          </Tooltip>
+          <Tooltip title="Copy">
+            <Button size="small" icon={<CopyOutlined />} />
           </Tooltip>
           <Tooltip title="Delete">
-            <Button
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              disabled={record.status === 'sent'}
-            />
+            <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDeleteNewsletter(record.id)} />
           </Tooltip>
         </Space>
       ),
@@ -444,16 +340,11 @@ const NewsletterList: React.FC = () => {
       title: 'Subscriber',
       key: 'subscriber',
       render: (record: Subscriber) => (
-        <div className="flex items-center space-x-3">
-          <Avatar icon={<UserOutlined />} />
+        <div className="flex items-center">
+          <Avatar icon={<UserOutlined />} className="mr-3" />
           <div>
-            <div className="font-medium">{record.firstName} {record.lastName}</div>
-            <div className="text-sm text-gray-600">{record.email}</div>
-            <div className="flex space-x-1 mt-1">
-              {record.tags.map(tag => (
-                <Tag key={tag} size="small">{tag}</Tag>
-              ))}
-            </div>
+            <div className="font-semibold">{record.name}</div>
+            <div className="text-sm text-gray-500">{record.email}</div>
           </div>
         </div>
       ),
@@ -462,216 +353,146 @@ const NewsletterList: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
-        <Tag color={getStatusColor(status)} icon={getStatusIcon(status)}>
-          {status.toUpperCase()}
-        </Tag>
-      ),
+      render: (status: string) => {
+        const colors = {
+          active: 'green',
+          unsubscribed: 'red',
+          bounced: 'orange',
+        };
+        return <Tag color={colors[status as keyof typeof colors]}>{status.toUpperCase()}</Tag>;
+      },
     },
     {
-      title: 'Engagement',
-      key: 'engagement',
-      render: (record: Subscriber) => (
-        <div className="text-center">
-          <div className="text-sm">
-            <span>{record.engagement.opens} opens</span>
-          </div>
-          <div className="text-sm">
-            <span>{record.engagement.clicks} clicks</span>
-          </div>
-          <div className="text-sm">
-            <span>{record.engagement.purchases} purchases</span>
-          </div>
-        </div>
-      ),
+      title: 'Subscribed',
+      dataIndex: 'subscribeDate',
+      key: 'subscribeDate',
+    },
+    {
+      title: 'Last Activity',
+      dataIndex: 'lastActivity',
+      key: 'lastActivity',
     },
     {
       title: 'Source',
       dataIndex: 'source',
       key: 'source',
-      render: (source: string) => (
-        <Tag>{source.replace('-', ' ')}</Tag>
-      ),
     },
     {
-      title: 'Subscribed',
-      dataIndex: 'subscribedAt',
-      key: 'subscribedAt',
-      render: (date: string) => (
-        <div className="text-sm">
-          {new Date(date).toLocaleDateString()}
-        </div>
+      title: 'Location',
+      dataIndex: 'location',
+      key: 'location',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (record: Subscriber) => (
+        <Space size="small">
+          <Tooltip title="View Profile">
+            <Button size="small" icon={<EyeOutlined />} />
+          </Tooltip>
+          <Tooltip title="Edit">
+            <Button size="small" icon={<EditOutlined />} />
+          </Tooltip>
+          <Tooltip title="Unsubscribe">
+            <Button size="small" icon={<UserDeleteOutlined />} />
+          </Tooltip>
+        </Space>
       ),
     },
   ];
 
-  const filteredCampaigns = campaigns.filter(campaign => {
-    const matchesSearch = campaign.name.toLowerCase().includes(searchText.toLowerCase()) ||
-                         campaign.subject.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || campaign.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
-
-  const filteredSubscribers = subscribers.filter(subscriber => {
-    const matchesSearch = subscriber.email.toLowerCase().includes(searchText.toLowerCase()) ||
-                         subscriber.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-                         subscriber.lastName.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || subscriber.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
-
-  // Calculate stats
-  const totalSubscribers = subscribers.length;
-  const activeSubscribers = subscribers.filter(s => s.status === 'active').length;
-  const totalCampaigns = campaigns.filter(c => c.status === 'sent').length;
-  const averageOpenRate = campaigns.length > 0 ? 
-    campaigns.reduce((sum, c) => sum + c.openRate, 0) / campaigns.length : 0;
-
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
-      ['clean']
-    ],
-  };
-
-  return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <Title level={2} className="mb-0">Newsletter Management</Title>
-          <p className="text-gray-600">Manage your email campaigns and subscribers</p>
-        </div>
-        <Space>
-          <Button icon={<CloudUploadOutlined />}>Import Subscribers</Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateCampaign} size="large">
-            Create Campaign
-          </Button>
-        </Space>
-      </div>
-
-      {/* Stats Cards */}
-      <Row gutter={[16, 16]}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <Statistic
-              title="Total Subscribers"
-              value={totalSubscribers}
-              valueStyle={{ color: '#1890ff', fontSize: '24px', fontWeight: 'bold' }}
-              prefix={<UserOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <Statistic
-              title="Active Subscribers"
-              value={activeSubscribers}
-              valueStyle={{ color: '#52c41a', fontSize: '24px', fontWeight: 'bold' }}
-              prefix={<CheckCircleOutlined />}
-              suffix={
-                <div className="text-sm text-green-600 mt-1">
-                  {((activeSubscribers / totalSubscribers) * 100).toFixed(1)}% active
-                </div>
-              }
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <Statistic
-              title="Campaigns Sent"
-              value={totalCampaigns}
-              valueStyle={{ color: '#f5a623', fontSize: '24px', fontWeight: 'bold' }}
-              prefix={<MailOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card className="text-center hover:shadow-lg transition-shadow">
-            <Statistic
-              title="Avg Open Rate"
-              value={averageOpenRate}
-              precision={1}
-              suffix="%"
-              valueStyle={{ color: '#722ed1', fontSize: '24px', fontWeight: 'bold' }}
-              prefix={<EyeOutlined />}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      <Tabs activeKey={activeTab} onChange={setActiveTab} type="card">
-        <TabPane tab="Campaigns" key="campaigns">
-          {/* Filters */}
+  const tabItems = [
+    {
+      key: 'campaigns',
+      label: 'Campaigns',
+      children: (
+        <>
           <Card className="mb-6">
             <div className="flex flex-wrap gap-4 items-center">
               <Search
                 placeholder="Search campaigns..."
-                allowClear
-                style={{ width: 300 }}
-                onSearch={setSearchText}
+                value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 300 }}
               />
               <Select
-                style={{ width: 150 }}
                 value={statusFilter}
                 onChange={setStatusFilter}
-                placeholder="Filter by status"
+                style={{ width: 150 }}
               >
                 <Option value="all">All Status</Option>
                 <Option value="draft">Draft</Option>
-                <Option value="scheduled">Scheduled</Option>
                 <Option value="sent">Sent</Option>
+                <Option value="scheduled">Scheduled</Option>
                 <Option value="sending">Sending</Option>
               </Select>
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateNewsletter}>
+                Create Campaign
+              </Button>
             </div>
           </Card>
 
           <Card>
             <Table
               columns={campaignColumns}
-              dataSource={filteredCampaigns}
+              dataSource={filteredNewsletters}
               rowKey="id"
               loading={loading}
               pagination={{
+                total: filteredNewsletters.length,
                 pageSize: 10,
                 showSizeChanger: true,
                 showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} campaigns`,
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} campaigns`,
               }}
             />
           </Card>
-        </TabPane>
+        </>
+      ),
+    },
+    {
+      key: 'subscribers',
+      label: 'Subscribers',
+      children: (
+        <>
+          <Card className="mb-6">
+            <Row gutter={16}>
+              <Col xs={24} sm={6}>
+                <Statistic title="Total Subscribers" value={subscribers.length} prefix={<UserOutlined />} />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic title="Active" value={subscribers.filter(s => s.status === 'active').length} />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic title="Unsubscribed" value={subscribers.filter(s => s.status === 'unsubscribed').length} />
+              </Col>
+              <Col xs={24} sm={6}>
+                <Statistic title="Bounced" value={subscribers.filter(s => s.status === 'bounced').length} />
+              </Col>
+            </Row>
+          </Card>
 
-        <TabPane tab="Subscribers" key="subscribers">
-          {/* Filters */}
           <Card className="mb-6">
             <div className="flex flex-wrap gap-4 items-center">
               <Search
                 placeholder="Search subscribers..."
-                allowClear
-                style={{ width: 300 }}
-                onSearch={setSearchText}
+                value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
+                style={{ width: 300 }}
               />
               <Select
-                style={{ width: 150 }}
                 value={statusFilter}
                 onChange={setStatusFilter}
-                placeholder="Filter by status"
+                style={{ width: 150 }}
               >
                 <Option value="all">All Status</Option>
                 <Option value="active">Active</Option>
                 <Option value="unsubscribed">Unsubscribed</Option>
                 <Option value="bounced">Bounced</Option>
-                <Option value="pending">Pending</Option>
               </Select>
+              <Button type="primary" icon={<UserAddOutlined />}>
+                Add Subscriber
+              </Button>
               <Button icon={<FileExcelOutlined />}>Export</Button>
             </div>
           </Card>
@@ -683,34 +504,64 @@ const NewsletterList: React.FC = () => {
               rowKey="id"
               loading={loading}
               pagination={{
-                pageSize: 15,
+                total: filteredSubscribers.length,
+                pageSize: 10,
                 showSizeChanger: true,
                 showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} subscribers`,
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} subscribers`,
               }}
             />
           </Card>
-        </TabPane>
-      </Tabs>
+        </>
+      ),
+    },
+  ];
 
-      {/* Create/Edit Campaign Modal */}
+  return (
+    <div className="p-6">
+      <div className="mb-6">
+        <Title level={2}>Newsletter Management</Title>
+      </div>
+
+      <Row gutter={16} className="mb-6">
+        <Col xs={24} sm={6}>
+          <Card>
+            <Statistic title="Total Campaigns" value={newsletters.length} prefix={<MailOutlined />} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={6}>
+          <Card>
+            <Statistic title="Sent This Month" value={newsletters.filter(n => n.status === 'sent').length} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={6}>
+          <Card>
+            <Statistic title="Total Subscribers" value={subscribers.length} suffix="K" precision={1} />
+          </Card>
+        </Col>
+        <Col xs={24} sm={6}>
+          <Card>
+            <Statistic title="Avg Open Rate" value={18.2} suffix="%" precision={1} />
+          </Card>
+        </Col>
+      </Row>
+
+      <Tabs activeKey={activeTab} onChange={setActiveTab} type="card" items={tabItems} />
+
       <Modal
-        title={editingCampaign ? 'Edit Campaign' : 'Create Campaign'}
-        open={campaignModalVisible}
-        onCancel={() => setCampaignModalVisible(false)}
+        title={editingNewsletter ? 'Edit Campaign' : 'Create New Campaign'}
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
         footer={null}
-        width={1000}
-        style={{ top: 20 }}
+        width={800}
       >
         <Form
           form={form}
           layout="vertical"
-          onFinish={handleSaveCampaign}
-          className="mt-4"
+          onFinish={handleSaveNewsletter}
         >
-          <Row gutter={[24, 0]}>
-            <Col xs={24} lg={16}>
+          <Row gutter={16}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="name"
                 label="Campaign Name"
@@ -718,69 +569,56 @@ const NewsletterList: React.FC = () => {
               >
                 <Input placeholder="Enter campaign name" />
               </Form.Item>
-
-              <Form.Item
-                name="subject"
-                label="Email Subject"
-                rules={[{ required: true, message: 'Please enter email subject' }]}
-              >
-                <Input placeholder="Enter email subject line" />
-              </Form.Item>
-
-              <Form.Item label="Email Content" required>
-                <ReactQuill
-                  theme="snow"
-                  value={content}
-                  onChange={setContent}
-                  modules={quillModules}
-                  style={{ height: '300px', marginBottom: '50px' }}
-                />
-              </Form.Item>
             </Col>
-
-            <Col xs={24} lg={8}>
-              <Form.Item name="status" label="Status" initialValue="draft">
-                <Select>
-                  <Option value="draft">Draft</Option>
-                  <Option value="scheduled">Scheduled</Option>
+            <Col xs={24} sm={12}>
+              <Form.Item
+                name="template"
+                label="Template"
+                rules={[{ required: true, message: 'Please select template' }]}
+              >
+                <Select placeholder="Select template">
+                  <Option value="fashion-weekly">Fashion Weekly</Option>
+                  <Option value="sale-promo">Sale Promotion</Option>
+                  <Option value="new-arrivals">New Arrivals</Option>
+                  <Option value="custom">Custom</Option>
                 </Select>
               </Form.Item>
-
-              <Form.Item name="scheduledAt" label="Schedule Date">
-                <DatePicker showTime style={{ width: '100%' }} />
-              </Form.Item>
-
-              <Form.Item name="template" label="Template" initialValue="default">
-                <Select>
-                  <Option value="default">Default</Option>
-                  <Option value="sale-template">Sale Template</Option>
-                  <Option value="product-template">Product Template</Option>
-                  <Option value="content-template">Content Template</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item name="tags" label="Tags">
-                <Select
-                  mode="tags"
-                  placeholder="Add tags"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-
-              <div className="border-t pt-4 mt-4">
-                <h4 className="text-lg font-medium mb-3">Target Audience</h4>
-                <div className="text-sm text-gray-600 mb-2">
-                  This campaign will be sent to {activeSubscribers} active subscribers
-                </div>
-                <Progress percent={100} showInfo={false} strokeColor="#52c41a" />
-              </div>
             </Col>
           </Row>
 
-          <div className="flex justify-end space-x-2 pt-6 border-t">
-            <Button onClick={() => setCampaignModalVisible(false)}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              {editingCampaign ? 'Update Campaign' : 'Create Campaign'}
+          <Form.Item
+            name="subject"
+            label="Email Subject"
+            rules={[{ required: true, message: 'Please enter email subject' }]}
+          >
+            <Input placeholder="Enter email subject line" />
+          </Form.Item>
+
+          <Form.Item
+            name="content"
+            label="Email Content"
+            rules={[{ required: true, message: 'Please enter email content' }]}
+          >
+            <TextArea rows={8} placeholder="Enter your email content here..." />
+          </Form.Item>
+
+          <Form.Item name="tags" label="Tags">
+            <Select mode="tags" placeholder="Add tags" style={{ width: '100%' }}>
+              <Option value="weekly">Weekly</Option>
+              <Option value="sale">Sale</Option>
+              <Option value="promotion">Promotion</Option>
+              <Option value="new">New</Option>
+              <Option value="fashion">Fashion</Option>
+            </Select>
+          </Form.Item>
+
+          <div className="flex justify-end gap-2">
+            <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
+            <Button type="default" htmlType="submit" loading={loading}>
+              Save as Draft
+            </Button>
+            <Button type="primary" htmlType="submit" loading={loading}>
+              {editingNewsletter ? 'Update Campaign' : 'Create Campaign'}
             </Button>
           </div>
         </Form>
