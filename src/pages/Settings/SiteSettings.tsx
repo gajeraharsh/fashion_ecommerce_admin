@@ -305,7 +305,7 @@ const SiteSettings: React.FC = () => {
       name: 'Mailchimp',
       description: 'Email marketing and newsletters',
       status: settings?.integrations.mailchimpApiKey ? 'connected' : 'disconnected',
-      icon: '���️',
+      icon: '✉️',
     },
     {
       name: 'Twilio',
@@ -538,7 +538,7 @@ const SiteSettings: React.FC = () => {
           </TabPane>
 
           {/* Theme Settings */}
-          <TabPane tab={<span><PaletteOutlined /> Theme</span>} key="theme">
+          <TabPane tab={<span><BgColorsOutlined /> Theme</span>} key="theme">
             <Row gutter={[24, 0]}>
               <Col xs={24} lg={12}>
                 <Card title="Colors" className="mb-6">
