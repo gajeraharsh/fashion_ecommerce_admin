@@ -5,6 +5,7 @@ import {
   Space,
   Tag,
   Input,
+  InputNumber,
   Select,
   Card,
   Row,
