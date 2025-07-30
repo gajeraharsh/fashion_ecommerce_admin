@@ -68,6 +68,9 @@ const App: React.FC = () => {
               <Route path="orders" element={<OrderList />} />
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
+              <Route path="users/roles" element={<RolesPermissions />} />
+              <Route path="products/categories" element={<Categories />} />
+              <Route path="products/bulk-upload" element={<BulkUpload />} />
               <Route path="transactions" element={<TransactionList />} />
               <Route path="banners" element={<BannerList />} />
               <Route path="faqs" element={<FAQList />} />
