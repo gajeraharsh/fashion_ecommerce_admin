@@ -48,6 +48,8 @@ const App: React.FC = () => {
             >
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="products" element={<ProductList />} />
+              <Route path="products/add" element={<ProductForm />} />
+              <Route path="products/edit/:id" element={<ProductForm />} />
               <Route path="orders" element={<OrderList />} />
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
