@@ -10,6 +10,7 @@ import ProductList from './pages/Products/ProductList';
 import ProductForm from './pages/Products/ProductForm';
 import OrderList from './pages/Orders/OrderList';
 import UserList from './pages/Users/UserList';
+import TransactionList from './pages/Transactions/TransactionList';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
