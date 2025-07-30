@@ -58,7 +58,7 @@ import dayjs, { Dayjs } from 'dayjs';
 const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { TabPane } = Tabs;
+// Using modern Tabs API
 
 interface Banner {
   id: string;
