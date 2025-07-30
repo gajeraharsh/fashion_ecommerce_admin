@@ -12,6 +12,7 @@ export const store = configureStore({
     products: productSlice,
     orders: orderSlice,
     users: userSlice,
+    transactions: transactionSlice,
     dashboard: dashboardSlice,
   },
 });
