@@ -62,7 +62,7 @@ import 'react-quill/dist/quill.snow.css';
 const { Search } = Input;
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
+// Using modern Tabs API
 const { Title } = Typography;
 
 interface Subscriber {
