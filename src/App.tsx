@@ -18,6 +18,7 @@ import FAQList from './pages/FAQ/FAQList';
 import SiteSettings from './pages/Settings/SiteSettings';
 import BlogList from './pages/Blog/BlogList';
 import NewsletterList from './pages/Newsletter/NewsletterList';
+import VendorList from './pages/Vendors/VendorList';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
