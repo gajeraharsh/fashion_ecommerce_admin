@@ -5,6 +5,7 @@ import orderSlice from './slices/orderSlice';
 import userSlice from './slices/userSlice';
 import transactionSlice from './slices/transactionSlice';
 import inventorySlice from './slices/inventorySlice';
+import couponSlice from './slices/couponSlice';
 import dashboardSlice from './slices/dashboardSlice';
 
 export const store = configureStore({
