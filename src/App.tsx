@@ -8,6 +8,7 @@ import LoginForm from './components/Auth/LoginForm';
 import Dashboard from './pages/Dashboard/Dashboard';
 import ProductList from './pages/Products/ProductList';
 import OrderList from './pages/Orders/OrderList';
+import UserList from './pages/Users/UserList';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
