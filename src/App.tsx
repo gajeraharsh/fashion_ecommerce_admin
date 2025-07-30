@@ -16,6 +16,8 @@ import CouponList from './pages/Coupons/CouponList';
 import BannerList from './pages/Banners/BannerList';
 import FAQList from './pages/FAQ/FAQList';
 import SiteSettings from './pages/Settings/SiteSettings';
+import BlogList from './pages/Blog/BlogList';
+import NewsletterList from './pages/Newsletter/NewsletterList';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
