@@ -42,7 +42,7 @@ import 'react-quill/dist/quill.snow.css';
 
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
+// Tabs converted to items format
 const { Panel } = Collapse;
 
 interface ProductVariant {
@@ -366,9 +366,11 @@ const ProductForm: React.FC = () => {
           },
         }}
       >
-        <Tabs defaultActiveKey="basic" type="card">
-          {/* Basic Information */}
-          <TabPane tab="Basic Information" key="basic">
+        <Tabs defaultActiveKey="basic" type="card" items={[
+          {
+            key: 'basic',
+            label: 'Basic Information',
+            children: (
             <Row gutter={[24, 0]}>
               <Col xs={24} lg={16}>
                 <Card title="Product Details" className="mb-6">
@@ -427,7 +429,7 @@ const ProductForm: React.FC = () => {
 
                   <Form.Item label="Tags">
                     <div className="mb-2">
-                      <AutoComplete
+                      <Input
                         placeholder="Add tags (press Enter to add)"
                         onPressEnter={(e) => {
                           const value = (e.target as HTMLInputElement).value.trim();
@@ -582,10 +584,12 @@ const ProductForm: React.FC = () => {
                 </Card>
               </Col>
             </Row>
-          </TabPane>
-
-          {/* Product Variants */}
-          <TabPane tab="Variants" key="variants">
+            ),
+          },
+          {
+            key: 'variants',
+            label: 'Variants',
+            children: (
             <Card
               title="Product Variants"
               extra={
@@ -606,10 +610,12 @@ const ProductForm: React.FC = () => {
                 locale={{ emptyText: 'No variants added yet' }}
               />
             </Card>
-          </TabPane>
-
-          {/* SEO Settings */}
-          <TabPane tab="SEO" key="seo">
+            ),
+          },
+          {
+            key: 'seo',
+            label: 'SEO',
+            children: (
             <Card title="Search Engine Optimization">
               <Form.Item
                 name={['seo', 'title']}
@@ -651,10 +657,12 @@ const ProductForm: React.FC = () => {
                 />
               </Form.Item>
             </Card>
-          </TabPane>
-
-          {/* Shipping */}
-          <TabPane tab="Shipping" key="shipping">
+            ),
+          },
+          {
+            key: 'shipping',
+            label: 'Shipping',
+            children: (
             <Card title="Shipping Information">
               <Row gutter={[16, 0]}>
                 <Col xs={24} sm={12}>
@@ -696,10 +704,12 @@ const ProductForm: React.FC = () => {
                 <Switch /> Free Shipping
               </Form.Item>
             </Card>
-          </TabPane>
-
-          {/* FAQs */}
-          <TabPane tab="FAQs" key="faqs">
+            ),
+          },
+          {
+            key: 'faqs',
+            label: 'FAQs',
+            children: (
             <Card
               title="Frequently Asked Questions"
               extra={
@@ -739,8 +749,9 @@ const ProductForm: React.FC = () => {
                 </div>
               )}
             </Card>
-          </TabPane>
-        </Tabs>
+            ),
+          },
+        ]} />
 
         {/* Submit Buttons */}
         <div className="flex justify-end space-x-2 pt-6 border-t">
