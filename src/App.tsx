@@ -63,7 +63,7 @@ const App: React.FC = () => {
               <Route path="instagram" element={<div className="p-6">Instagram Feed - Coming Soon</div>} />
               <Route path="coupons" element={<div className="p-6">Coupons & Discounts - Coming Soon</div>} />
               <Route path="newsletter" element={<div className="p-6">Newsletter - Coming Soon</div>} />
-              <Route path="inventory" element={<div className="p-6">Inventory - Coming Soon</div>} />
+              <Route path="inventory" element={<InventoryList />} />
               <Route path="vendors" element={<div className="p-6">Vendor Management - Coming Soon</div>} />
               <Route path="seo" element={<div className="p-6">SEO Management - Coming Soon</div>} />
               <Route path="pages" element={<div className="p-6">Page Management - Coming Soon</div>} />
