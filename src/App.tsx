@@ -10,6 +10,7 @@ import ProductList from './pages/Products/ProductList';
 import ProductForm from './pages/Products/ProductForm';
 import OrderList from './pages/Orders/OrderList';
 import UserList from './pages/Users/UserList';
+import UserForm from './pages/Users/UserForm';
 import TransactionList from './pages/Transactions/TransactionList';
 import InventoryList from './pages/Inventory/InventoryList';
 import CouponList from './pages/Coupons/CouponList';
