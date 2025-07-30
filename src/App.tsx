@@ -12,6 +12,7 @@ import OrderList from './pages/Orders/OrderList';
 import UserList from './pages/Users/UserList';
 import TransactionList from './pages/Transactions/TransactionList';
 import InventoryList from './pages/Inventory/InventoryList';
+import CouponList from './pages/Coupons/CouponList';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
