@@ -31,7 +31,7 @@ import {
   GlobalOutlined,
   MailOutlined,
   ShoppingOutlined,
-  PaletteOutlined,
+  BgColorsOutlined,
   SafetyOutlined,
   ApiOutlined,
   BellOutlined,
@@ -305,7 +305,7 @@ const SiteSettings: React.FC = () => {
       name: 'Mailchimp',
       description: 'Email marketing and newsletters',
       status: settings?.integrations.mailchimpApiKey ? 'connected' : 'disconnected',
-      icon: '✉️',
+      icon: '���️',
     },
     {
       name: 'Twilio',
