@@ -71,7 +71,7 @@ const App: React.FC = () => {
               <Route path="coupons" element={<CouponList />} />
               <Route path="newsletter" element={<NewsletterList />} />
               <Route path="inventory" element={<InventoryList />} />
-              <Route path="vendors" element={<div className="p-6">Vendor Management - Coming Soon</div>} />
+              <Route path="vendors" element={<VendorList />} />
               <Route path="seo" element={<div className="p-6">SEO Management - Coming Soon</div>} />
               <Route path="pages" element={<div className="p-6">Page Management - Coming Soon</div>} />
               <Route path="audit" element={<div className="p-6">Audit Logs - Coming Soon</div>} />
