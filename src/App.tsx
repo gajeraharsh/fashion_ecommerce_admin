@@ -60,9 +60,9 @@ const App: React.FC = () => {
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
               <Route path="transactions" element={<TransactionList />} />
-              <Route path="banners" element={<div className="p-6">Banner Management - Coming Soon</div>} />
-              <Route path="faqs" element={<div className="p-6">FAQ Management - Coming Soon</div>} />
-              <Route path="settings" element={<div className="p-6">Site Settings - Coming Soon</div>} />
+              <Route path="banners" element={<BannerList />} />
+              <Route path="faqs" element={<FAQList />} />
+              <Route path="settings" element={<SiteSettings />} />
               <Route path="blog" element={<div className="p-6">Blog Management - Coming Soon</div>} />
               <Route path="instagram" element={<div className="p-6">Instagram Feed - Coming Soon</div>} />
               <Route path="coupons" element={<CouponList />} />
