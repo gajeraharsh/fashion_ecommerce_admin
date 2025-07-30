@@ -16,6 +16,7 @@ export const store = configureStore({
     users: userSlice,
     transactions: transactionSlice,
     inventory: inventorySlice,
+    coupons: couponSlice,
     dashboard: dashboardSlice,
   },
 });
