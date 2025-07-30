@@ -41,7 +41,7 @@ import {
 } from '@ant-design/icons';
 
 const { TextArea } = Input;
-const { TabPane } = Tabs;
+// Tabs converted to items format
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
