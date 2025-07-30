@@ -66,7 +66,7 @@ import { setInventory, updateInventoryItem, addPurchaseOrder } from '../../store
 
 const { Search } = Input;
 const { Option } = Select;
-const { TabPane } = Tabs;
+// Using modern Tabs API
 
 interface InventoryItem {
   id: string;
