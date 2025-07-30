@@ -22,6 +22,9 @@ import VendorList from './pages/Vendors/VendorList';
 import SEOManager from './pages/SEO/SEOManager';
 import PageManager from './pages/PageManager/PageManager';
 import AuditLogs from './pages/AuditLogs/AuditLogs';
+import RolesPermissions from './pages/Users/RolesPermissions';
+import Categories from './pages/Products/Categories';
+import BulkUpload from './pages/Products/BulkUpload';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
