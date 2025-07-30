@@ -49,7 +49,8 @@ const App: React.FC = () => {
           },
         }}
       >
-        <Router>
+        <AntdApp>
+          <Router>
           <Routes>
             <Route path="/login" element={<LoginForm />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -86,7 +87,8 @@ const App: React.FC = () => {
               <Route path="audit" element={<AuditLogs />} />
             </Route>
           </Routes>
-        </Router>
+          </Router>
+        </AntdApp>
       </ConfigProvider>
     </Provider>
   );
