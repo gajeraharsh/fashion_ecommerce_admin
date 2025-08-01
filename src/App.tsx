@@ -16,14 +16,14 @@ import InventoryList from './pages/Inventory/InventoryList';
 import CouponList from './pages/Coupons/CouponList';
 import BannerList from './pages/Banners/BannerList';
 import FAQList from './pages/FAQ/FAQList';
-import SiteSettings from './pages/Settings/SiteSettings';
+
 import BlogList from './pages/Blog/BlogList';
 import NewsletterList from './pages/Newsletter/NewsletterList';
 
 import SEOManager from './pages/SEO/SEOManager';
-import PageManager from './pages/PageManager/PageManager';
+
 import AuditLogs from './pages/AuditLogs/AuditLogs';
-import RolesPermissions from './pages/Users/RolesPermissions';
+
 import Categories from './pages/Products/Categories';
 import BulkUpload from './pages/Products/BulkUpload';
 import InstagramFeed from './pages/Instagram/InstagramFeed';
