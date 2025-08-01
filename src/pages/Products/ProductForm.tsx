@@ -37,8 +37,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { addProduct, updateProduct } from '../../store/slices/productSlice';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 
 const { Option } = Select;
 const { TextArea } = Input;
