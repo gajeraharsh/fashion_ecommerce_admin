@@ -115,11 +115,7 @@ const AdminLayout: React.FC = () => {
       icon: <InboxOutlined />,
       label: 'Inventory',
     },
-    {
-      key: '/vendors',
-      icon: <TeamOutlined />,
-      label: 'Vendor Management',
-    },
+
     {
       key: '/seo',
       icon: <FileSearchOutlined />,
