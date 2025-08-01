@@ -15,7 +15,7 @@ import {
   Space,
   Table,
   Modal,
-  message,
+  App,
   Tabs,
   Collapse,
   AutoComplete,
