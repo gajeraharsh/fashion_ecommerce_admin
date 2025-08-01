@@ -13,7 +13,7 @@ import {
   Descriptions,
   Divider,
   Steps,
-  message,
+  App,
 } from 'antd';
 import {
   SearchOutlined,
