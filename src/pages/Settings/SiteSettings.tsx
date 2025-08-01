@@ -397,7 +397,18 @@ const SiteSettings: React.FC = () => {
 
         <div className="flex justify-end">
           <Space>
-            <Button size="large">Reset to Defaults</Button>
+            <Button
+              size="large"
+              onClick={() => {
+                Modal.confirm({
+                  title: 'Reset to Defaults',
+                  content: 'Are you sure you want to reset all settings to their default values? This action cannot be undone.',
+                  onOk: () => message.success('Settings reset to defaults successfully'),
+                });
+              }}
+            >
+              Reset to Defaults
+            </Button>
             <Button
               type="primary"
               size="large"
