@@ -34,6 +34,7 @@ import dayjs from 'dayjs';
 
 const { Search } = Input;
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 // Using modern Tabs API
 
