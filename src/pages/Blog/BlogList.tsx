@@ -86,10 +86,7 @@ const BlogList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [selectedPost] = useState<BlogPost | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
-  const [content, setContent] = useState('');
-  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Mock data
