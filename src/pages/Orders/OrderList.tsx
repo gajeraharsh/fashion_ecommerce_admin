@@ -41,6 +41,18 @@ const OrderList: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [detailsVisible, setDetailsVisible] = useState(false);
 
+  const downloadInvoice = (order: any) => {
+    const invoiceData = `Invoice for Order ${order.id}\n\nCustomer: ${order.customerName}\nEmail: ${order.customerEmail}\nAmount: $${order.total}\nDate: ${order.date}\nStatus: ${order.status}\n\nThank you for your business!`;
+    const blob = new Blob([invoiceData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice-${order.id}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    message.success('Invoice downloaded successfully');
+  };
+
   useEffect(() => {
     // Mock data - replace with actual API call
     const mockOrders = [
