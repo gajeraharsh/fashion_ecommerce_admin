@@ -19,7 +19,7 @@ import FAQList from './pages/FAQ/FAQList';
 import SiteSettings from './pages/Settings/SiteSettings';
 import BlogList from './pages/Blog/BlogList';
 import NewsletterList from './pages/Newsletter/NewsletterList';
-import VendorList from './pages/Vendors/VendorList';
+
 import SEOManager from './pages/SEO/SEOManager';
 import PageManager from './pages/PageManager/PageManager';
 import AuditLogs from './pages/AuditLogs/AuditLogs';
