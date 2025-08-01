@@ -354,6 +354,7 @@ const InstagramFeed: React.FC = () => {
                     <Image
                       src={selectedPost.imageUrl}
                       alt="Post"
+                      preview={false}
                       style={{ maxWidth: '300px', maxHeight: '300px' }}
                     />
                   </div>
