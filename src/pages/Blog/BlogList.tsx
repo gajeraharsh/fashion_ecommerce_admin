@@ -635,12 +635,12 @@ const BlogList: React.FC = () => {
                 />
               </Form.Item>
 
-              <Form.Item name="featured" valuePropName="checked">
-                <Switch /> Featured Post
+              <Form.Item name="featured" label="Featured Post" valuePropName="checked">
+                <Switch />
               </Form.Item>
 
-              <Form.Item name="allowComments" valuePropName="checked" initialValue={true}>
-                <Switch /> Allow Comments
+              <Form.Item name="allowComments" label="Allow Comments" valuePropName="checked" initialValue={true}>
+                <Switch />
               </Form.Item>
 
               {/* SEO Section */}
