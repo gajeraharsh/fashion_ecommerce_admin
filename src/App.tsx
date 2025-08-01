@@ -74,13 +74,13 @@ const App: React.FC = () => {
               <Route path="users" element={<UserList />} />
               <Route path="users/add" element={<UserForm />} />
               <Route path="users/edit/:id" element={<UserForm />} />
-              <Route path="users/roles" element={<RolesPermissions />} />
+
               <Route path="products/categories" element={<Categories />} />
               <Route path="products/bulk-upload" element={<BulkUpload />} />
               <Route path="transactions" element={<TransactionList />} />
               <Route path="banners" element={<BannerList />} />
               <Route path="faqs" element={<FAQList />} />
-              <Route path="settings" element={<SiteSettings />} />
+
               <Route path="blog" element={<BlogList />} />
               <Route path="instagram" element={<InstagramFeed />} />
               <Route path="coupons" element={<CouponList />} />
@@ -88,7 +88,7 @@ const App: React.FC = () => {
               <Route path="inventory" element={<InventoryList />} />
 
               <Route path="seo" element={<SEOManager />} />
-              <Route path="pages" element={<PageManager />} />
+
               <Route path="audit" element={<AuditLogs />} />
               <Route path="profile" element={<AdminProfile />} />
             </Route>
