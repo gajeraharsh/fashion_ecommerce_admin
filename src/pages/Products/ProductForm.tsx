@@ -189,22 +189,7 @@ const ProductForm: React.FC = () => {
     });
   };
 
-  const handleSaveVariant = (values: any) => {
-    const variantData: ProductVariant = {
-      ...values,
-      id: editingVariant?.id || Date.now().toString(),
-      images: values.images?.fileList?.map((file: any) => file.url || file.response?.url) || [],
-    };
 
-    if (editingVariant) {
-      setVariants(variants.map(v => v.id === editingVariant.id ? variantData : v));
-    } else {
-      setVariants([...variants, variantData]);
-    }
-
-    setVariantModalVisible(false);
-    message.success('Variant saved successfully');
-  };
 
   const handleDeleteVariant = (variantId: string) => {
     setVariants(variants.filter(v => v.id !== variantId));
