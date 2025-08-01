@@ -342,108 +342,115 @@ const InstagramFeed: React.FC = () => {
         width={800}
         footer={null}
       >
-        <Tabs defaultActiveKey="details">
-          <TabPane tab="Post Details" key="details">
-            {selectedPost ? (
-              <div className="space-y-4">
-                <div className="text-center">
-                  <Image
-                    src={selectedPost.imageUrl}
-                    alt="Post"
-                    style={{ maxWidth: '300px', maxHeight: '300px' }}
-                  />
+        <Tabs
+          defaultActiveKey="details"
+          items={[
+            {
+              key: 'details',
+              label: 'Post Details',
+              children: selectedPost ? (
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <Image
+                      src={selectedPost.imageUrl}
+                      alt="Post"
+                      style={{ maxWidth: '300px', maxHeight: '300px' }}
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Caption:</h4>
+                    <p>{selectedPost.caption}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Hashtags:</h4>
+                    <div className="flex flex-wrap gap-1">
+                      {selectedPost.hashtags.map((tag, index) => (
+                        <Tag key={index} color="blue">#{tag}</Tag>
+                      ))}
+                    </div>
+                  </div>
+                  <Row gutter={16}>
+                    <Col span={8}>
+                      <Statistic title="Likes" value={selectedPost.likes} />
+                    </Col>
+                    <Col span={8}>
+                      <Statistic title="Comments" value={selectedPost.comments} />
+                    </Col>
+                    <Col span={8}>
+                      <Statistic title="Shares" value={selectedPost.shares} />
+                    </Col>
+                  </Row>
                 </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Caption:</h4>
-                  <p>{selectedPost.caption}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-2">Hashtags:</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {selectedPost.hashtags.map((tag, index) => (
-                      <Tag key={index} color="blue">#{tag}</Tag>
-                    ))}
+              ) : (
+                <Form layout="vertical">
+                  <Form.Item label="Post Image/Video">
+                    <Upload.Dragger>
+                      <p className="ant-upload-drag-icon">
+                        <UploadOutlined />
+                      </p>
+                      <p className="ant-upload-text">Click or drag file to upload</p>
+                      <p className="ant-upload-hint">Support for images and videos</p>
+                    </Upload.Dragger>
+                  </Form.Item>
+                  <Form.Item label="Caption">
+                    <Input.TextArea rows={4} placeholder="Write your caption..." />
+                  </Form.Item>
+                  <Form.Item label="Hashtags">
+                    <Input placeholder="Enter hashtags separated by commas" />
+                  </Form.Item>
+                  <Form.Item label="Schedule Date">
+                    <DatePicker showTime />
+                  </Form.Item>
+                  <Form.Item label="Post Type">
+                    <Select placeholder="Select post type">
+                      <Option value="photo">Photo</Option>
+                      <Option value="video">Video</Option>
+                      <Option value="carousel">Carousel</Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item>
+                    <Space>
+                      <Button type="primary">Save as Draft</Button>
+                      <Button type="primary">Schedule Post</Button>
+                      <Button>Publish Now</Button>
+                    </Space>
+                  </Form.Item>
+                </Form>
+              ),
+            },
+            {
+              key: 'analytics',
+              label: 'Analytics',
+              children: selectedPost && (
+                <div className="space-y-4">
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Card>
+                        <Statistic
+                          title="Engagement Rate"
+                          value={selectedPost.engagement}
+                          precision={1}
+                          suffix="%"
+                        />
+                      </Card>
+                    </Col>
+                    <Col span={12}>
+                      <Card>
+                        <Statistic
+                          title="Reach"
+                          value={selectedPost.reach}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+                  <div className="text-center text-gray-500 mt-8">
+                    📊 Detailed analytics charts would be implemented here
                   </div>
                 </div>
-                <Row gutter={16}>
-                  <Col span={8}>
-                    <Statistic title="Likes" value={selectedPost.likes} />
-                  </Col>
-                  <Col span={8}>
-                    <Statistic title="Comments" value={selectedPost.comments} />
-                  </Col>
-                  <Col span={8}>
-                    <Statistic title="Shares" value={selectedPost.shares} />
-                  </Col>
-                </Row>
-              </div>
-            ) : (
-              <Form layout="vertical">
-                <Form.Item label="Post Image/Video">
-                  <Upload.Dragger>
-                    <p className="ant-upload-drag-icon">
-                      <UploadOutlined />
-                    </p>
-                    <p className="ant-upload-text">Click or drag file to upload</p>
-                    <p className="ant-upload-hint">Support for images and videos</p>
-                  </Upload.Dragger>
-                </Form.Item>
-                <Form.Item label="Caption">
-                  <Input.TextArea rows={4} placeholder="Write your caption..." />
-                </Form.Item>
-                <Form.Item label="Hashtags">
-                  <Input placeholder="Enter hashtags separated by commas" />
-                </Form.Item>
-                <Form.Item label="Schedule Date">
-                  <DatePicker showTime />
-                </Form.Item>
-                <Form.Item label="Post Type">
-                  <Select placeholder="Select post type">
-                    <Option value="photo">Photo</Option>
-                    <Option value="video">Video</Option>
-                    <Option value="carousel">Carousel</Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item>
-                  <Space>
-                    <Button type="primary">Save as Draft</Button>
-                    <Button type="primary">Schedule Post</Button>
-                    <Button>Publish Now</Button>
-                  </Space>
-                </Form.Item>
-              </Form>
-            )}
-          </TabPane>
-          <TabPane tab="Analytics" key="analytics">
-            {selectedPost && (
-              <div className="space-y-4">
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Engagement Rate"
-                        value={selectedPost.engagement}
-                        precision={1}
-                        suffix="%"
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card>
-                      <Statistic
-                        title="Reach"
-                        value={selectedPost.reach}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-                <div className="text-center text-gray-500 mt-8">
-                  📊 Detailed analytics charts would be implemented here
-                </div>
-              </div>
-            )}
-          </TabPane>
-        </Tabs>
+              ),
+            },
+          ]}
+        />
       </Modal>
     </div>
   );
