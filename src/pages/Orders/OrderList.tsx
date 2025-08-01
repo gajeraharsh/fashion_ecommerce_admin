@@ -34,6 +34,7 @@ const { Option } = Select;
 const { Step } = Steps;
 
 const OrderList: React.FC = () => {
+  const { message } = App.useApp();
   const dispatch = useDispatch();
   const { orders, loading } = useSelector((state: RootState) => state.orders);
   const [searchText, setSearchText] = useState('');
