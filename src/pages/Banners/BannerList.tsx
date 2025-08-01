@@ -205,12 +205,7 @@ const BannerList: React.FC = () => {
   };
 
   const handleEdit = (banner: Banner) => {
-    setEditingBanner(banner);
-    form.setFieldsValue({
-      ...banner,
-      dateRange: [dayjs(banner.startDate), dayjs(banner.endDate)],
-    });
-    setModalVisible(true);
+    navigate(`/banners/edit/${banner.id}`);
   };
 
   const handleSave = async (values: Partial<Banner>) => {
