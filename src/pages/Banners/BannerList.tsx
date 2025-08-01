@@ -85,10 +85,8 @@ const BannerList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [positionFilter, setPositionFilter] = useState('all');
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [analyticsVisible, setAnalyticsVisible] = useState(false);
-  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Mock data
