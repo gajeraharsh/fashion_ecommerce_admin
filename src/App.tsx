@@ -76,6 +76,7 @@ const App: React.FC = () => {
               <Route path="products/:productId/variants/new" element={<VariantForm />} />
               <Route path="products/:productId/variants/edit/:variantId" element={<VariantForm />} />
               <Route path="orders" element={<OrderList />} />
+              <Route path="orders/:id" element={<OrderDetails />} />
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
               <Route path="users/add" element={<UserForm />} />
