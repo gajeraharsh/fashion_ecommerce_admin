@@ -94,6 +94,7 @@ interface BlogPost {
 }
 
 const BlogList: React.FC = () => {
+  const { message } = App.useApp();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
