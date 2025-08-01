@@ -988,18 +988,18 @@ const CouponList: React.FC = () => {
 
           <Row gutter={[16, 0]}>
             <Col xs={24} sm={8}>
-              <Form.Item name="stackable" valuePropName="checked">
-                <Switch /> Stackable with other coupons
+              <Form.Item name="stackable" label="Stackable with other coupons" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8}>
-              <Form.Item name="oneTimeUse" valuePropName="checked">
-                <Switch /> One-time use per customer
+              <Form.Item name="oneTimeUse" label="One-time use per customer" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Col>
             <Col xs={24} sm={8}>
-              <Form.Item name="autoApply" valuePropName="checked">
-                <Switch /> Auto-apply at checkout
+              <Form.Item name="autoApply" label="Auto-apply at checkout" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Col>
           </Row>

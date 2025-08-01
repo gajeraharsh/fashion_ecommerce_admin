@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form, Input, Button, Card, message, Checkbox } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Card, Checkbox, App } from 'antd';
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../../store/slices/authSlice';
@@ -13,6 +13,7 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
+  const { message } = App.useApp();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state: RootState) => state.auth);
@@ -38,7 +39,7 @@ const LoginForm: React.FC = () => {
       dispatch(loginSuccess({ user: mockUser, token: mockToken }));
       message.success('Login successful!');
       navigate('/dashboard');
-    } catch (error) {
+    } catch {
       dispatch(loginFailure());
       message.error('Login failed. Please try again.');
     }

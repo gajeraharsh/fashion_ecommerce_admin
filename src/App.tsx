@@ -9,23 +9,29 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import ProductList from './pages/Products/ProductList';
 import ProductForm from './pages/Products/ProductForm';
 import OrderList from './pages/Orders/OrderList';
+import OrderDetails from './pages/Orders/OrderDetails';
 import UserList from './pages/Users/UserList';
 import UserForm from './pages/Users/UserForm';
 import TransactionList from './pages/Transactions/TransactionList';
 import InventoryList from './pages/Inventory/InventoryList';
 import CouponList from './pages/Coupons/CouponList';
 import BannerList from './pages/Banners/BannerList';
+import BannerForm from './pages/Banners/BannerForm';
 import FAQList from './pages/FAQ/FAQList';
-import SiteSettings from './pages/Settings/SiteSettings';
+
 import BlogList from './pages/Blog/BlogList';
+import BlogForm from './pages/Blog/BlogForm';
+import VariantForm from './pages/Products/VariantForm';
 import NewsletterList from './pages/Newsletter/NewsletterList';
-import VendorList from './pages/Vendors/VendorList';
+
 import SEOManager from './pages/SEO/SEOManager';
-import PageManager from './pages/PageManager/PageManager';
+
 import AuditLogs from './pages/AuditLogs/AuditLogs';
-import RolesPermissions from './pages/Users/RolesPermissions';
+
 import Categories from './pages/Products/Categories';
 import BulkUpload from './pages/Products/BulkUpload';
+import InstagramFeed from './pages/Instagram/InstagramFeed';
+import AdminProfile from './pages/Profile/AdminProfile';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 
 const App: React.FC = () => {
@@ -67,27 +73,35 @@ const App: React.FC = () => {
               <Route path="products" element={<ProductList />} />
               <Route path="products/add" element={<ProductForm />} />
               <Route path="products/edit/:id" element={<ProductForm />} />
+              <Route path="products/:productId/variants/new" element={<VariantForm />} />
+              <Route path="products/:productId/variants/edit/:variantId" element={<VariantForm />} />
               <Route path="orders" element={<OrderList />} />
+              <Route path="orders/:id" element={<OrderDetails />} />
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
               <Route path="users/add" element={<UserForm />} />
               <Route path="users/edit/:id" element={<UserForm />} />
-              <Route path="users/roles" element={<RolesPermissions />} />
+
               <Route path="products/categories" element={<Categories />} />
               <Route path="products/bulk-upload" element={<BulkUpload />} />
               <Route path="transactions" element={<TransactionList />} />
               <Route path="banners" element={<BannerList />} />
+              <Route path="banners/new" element={<BannerForm />} />
+              <Route path="banners/edit/:id" element={<BannerForm />} />
               <Route path="faqs" element={<FAQList />} />
-              <Route path="settings" element={<SiteSettings />} />
+
               <Route path="blog" element={<BlogList />} />
-              <Route path="instagram" element={<div className="p-6">Instagram Feed - Coming Soon</div>} />
+              <Route path="blog/new" element={<BlogForm />} />
+              <Route path="blog/edit/:id" element={<BlogForm />} />
+              <Route path="instagram" element={<InstagramFeed />} />
               <Route path="coupons" element={<CouponList />} />
               <Route path="newsletter" element={<NewsletterList />} />
               <Route path="inventory" element={<InventoryList />} />
-              <Route path="vendors" element={<VendorList />} />
+
               <Route path="seo" element={<SEOManager />} />
-              <Route path="pages" element={<PageManager />} />
+
               <Route path="audit" element={<AuditLogs />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
           </Routes>
           </Router>

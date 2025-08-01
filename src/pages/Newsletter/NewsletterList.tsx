@@ -13,7 +13,7 @@ import {
   DatePicker,
   Modal,
   Form,
-  message,
+  App,
   Progress,
   Timeline,
   Badge,
@@ -96,6 +96,7 @@ interface Subscriber {
 }
 
 const NewsletterList: React.FC = () => {
+  const { message } = App.useApp();
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(false);
@@ -105,6 +106,60 @@ const NewsletterList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingNewsletter, setEditingNewsletter] = useState<Newsletter | null>(null);
   const [form] = Form.useForm();
+
+  // Button handlers
+  const handleViewCampaign = (record: Newsletter) => {
+    message.info(`Viewing campaign: ${record.name}`);
+  };
+
+  const handleCopyCampaign = (record: Newsletter) => {
+    message.success(`Campaign "${record.name}" duplicated successfully`);
+  };
+
+  const handleViewSubscriber = (record: Subscriber) => {
+    message.info(`Viewing subscriber profile: ${record.email}`);
+  };
+
+  const handleEditSubscriber = (record: Subscriber) => {
+    message.info(`Editing subscriber: ${record.email}`);
+  };
+
+  const handleUnsubscribe = (record: Subscriber) => {
+    Modal.confirm({
+      title: 'Unsubscribe User',
+      content: `Are you sure you want to unsubscribe ${record.email}?`,
+      onOk: () => message.success('User unsubscribed successfully'),
+    });
+  };
+
+  const handleAddSubscriber = () => {
+    message.info('Opening add subscriber form');
+  };
+
+  const handleExportSubscribers = () => {
+    const headers = ['Email', 'Name', 'Status', 'Subscribed Date'];
+    const data = filteredSubscribers.map(sub => [
+      sub.email,
+      sub.name,
+      sub.status,
+      sub.subscribeDate
+    ]);
+
+    const csvContent = [headers, ...data]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'subscribers.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('Subscribers exported successfully');
+  };
 
   // Mock data
   useEffect(() => {
@@ -319,13 +374,13 @@ const NewsletterList: React.FC = () => {
       render: (record: Newsletter) => (
         <Space size="small">
           <Tooltip title="View">
-            <Button size="small" icon={<EyeOutlined />} />
+            <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewCampaign(record)} />
           </Tooltip>
           <Tooltip title="Edit">
             <Button size="small" icon={<EditOutlined />} onClick={() => handleEditNewsletter(record)} />
           </Tooltip>
           <Tooltip title="Copy">
-            <Button size="small" icon={<CopyOutlined />} />
+            <Button size="small" icon={<CopyOutlined />} onClick={() => handleCopyCampaign(record)} />
           </Tooltip>
           <Tooltip title="Delete">
             <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDeleteNewsletter(record.id)} />
@@ -388,13 +443,13 @@ const NewsletterList: React.FC = () => {
       render: (record: Subscriber) => (
         <Space size="small">
           <Tooltip title="View Profile">
-            <Button size="small" icon={<EyeOutlined />} />
+            <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewSubscriber(record)} />
           </Tooltip>
           <Tooltip title="Edit">
-            <Button size="small" icon={<EditOutlined />} />
+            <Button size="small" icon={<EditOutlined />} onClick={() => handleEditSubscriber(record)} />
           </Tooltip>
           <Tooltip title="Unsubscribe">
-            <Button size="small" icon={<UserDeleteOutlined />} />
+            <Button size="small" icon={<UserDeleteOutlined />} onClick={() => handleUnsubscribe(record)} />
           </Tooltip>
         </Space>
       ),
@@ -490,10 +545,10 @@ const NewsletterList: React.FC = () => {
                 <Option value="unsubscribed">Unsubscribed</Option>
                 <Option value="bounced">Bounced</Option>
               </Select>
-              <Button type="primary" icon={<UserAddOutlined />}>
+              <Button type="primary" icon={<UserAddOutlined />} onClick={handleAddSubscriber}>
                 Add Subscriber
               </Button>
-              <Button icon={<FileExcelOutlined />}>Export</Button>
+              <Button icon={<FileExcelOutlined />} onClick={handleExportSubscribers}>Export</Button>
             </div>
           </Card>
 

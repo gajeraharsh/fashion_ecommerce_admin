@@ -8,12 +8,7 @@ import {
   Select,
   Card,
   Avatar,
-  Timeline,
-  Modal,
-  Descriptions,
-  Divider,
-  Steps,
-  message,
+  App,
 } from 'antd';
 import {
   SearchOutlined,
@@ -25,21 +20,33 @@ import {
   EnvironmentOutlined,
   CreditCardOutlined,
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { setOrders, updateOrderStatus } from '../../store/slices/orderSlice';
 
 const { Search } = Input;
 const { Option } = Select;
-const { Step } = Steps;
 
 const OrderList: React.FC = () => {
+  const { message } = App.useApp();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { orders, loading } = useSelector((state: RootState) => state.orders);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [detailsVisible, setDetailsVisible] = useState(false);
+
+  const downloadInvoice = (order: any) => {
+    const invoiceData = `Invoice for Order ${order.id}\n\nCustomer: ${order.customerName}\nEmail: ${order.customerEmail}\nAmount: $${order.total}\nDate: ${order.date}\nStatus: ${order.status}\n\nThank you for your business!`;
+    const blob = new Blob([invoiceData], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `invoice-${order.id}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+    message.success('Invoice downloaded successfully');
+  };
 
   useEffect(() => {
     // Mock data - replace with actual API call
@@ -125,16 +132,7 @@ const OrderList: React.FC = () => {
     return colors[status as keyof typeof colors] || 'default';
   };
 
-  const getStatusStep = (status: string) => {
-    const steps = {
-      placed: 0,
-      packed: 1,
-      shipped: 2,
-      delivered: 3,
-      returned: 4,
-    };
-    return steps[status as keyof typeof steps] || 0;
-  };
+
 
   const handleStatusUpdate = (orderId: string, newStatus: any) => {
     dispatch(updateOrderStatus({ orderId, status: newStatus }));
@@ -142,8 +140,7 @@ const OrderList: React.FC = () => {
   };
 
   const showOrderDetails = (order: any) => {
-    setSelectedOrder(order);
-    setDetailsVisible(true);
+    navigate(`/orders/${order.id}`);
   };
 
   const columns = [
@@ -246,7 +243,7 @@ const OrderList: React.FC = () => {
           <Button
             type="text"
             icon={<PrinterOutlined />}
-            onClick={() => message.info('Downloading invoice...')}
+            onClick={() => downloadInvoice(record)}
           >
             Invoice
           </Button>
@@ -346,102 +343,7 @@ const OrderList: React.FC = () => {
         />
       </Card>
 
-      {/* Order Details Modal */}
-      <Modal
-        title={`Order Details - ${selectedOrder?.id}`}
-        open={detailsVisible}
-        onCancel={() => setDetailsVisible(false)}
-        width={800}
-        footer={[
-          <Button key="close" onClick={() => setDetailsVisible(false)}>
-            Close
-          </Button>,
-          <Button key="invoice" type="default" icon={<PrinterOutlined />}>
-            Download Invoice
-          </Button>,
-          <Select
-            key="status"
-            style={{ width: 150 }}
-            value={selectedOrder?.status}
-            onChange={(value) => handleStatusUpdate(selectedOrder?.id, value)}
-          >
-            <Option value="placed">Placed</Option>
-            <Option value="packed">Packed</Option>
-            <Option value="shipped">Shipped</Option>
-            <Option value="delivered">Delivered</Option>
-            <Option value="returned">Returned</Option>
-          </Select>,
-        ]}
-      >
-        {selectedOrder && (
-          <div className="space-y-6">
-            {/* Order Status Timeline */}
-            <Steps current={getStatusStep(selectedOrder.status)} size="small">
-              <Step title="Placed" description="Order received" />
-              <Step title="Packed" description="Items packed" />
-              <Step title="Shipped" description="Out for delivery" />
-              <Step title="Delivered" description="Order completed" />
-            </Steps>
 
-            <Divider />
-
-            {/* Customer Information */}
-            <Descriptions title="Customer Information" column={2}>
-              <Descriptions.Item label="Name">{selectedOrder.customerName}</Descriptions.Item>
-              <Descriptions.Item label="Email">{selectedOrder.customerEmail}</Descriptions.Item>
-              <Descriptions.Item label="Order Date">
-                {new Date(selectedOrder.createdAt).toLocaleString()}
-              </Descriptions.Item>
-              <Descriptions.Item label="Payment Method">{selectedOrder.paymentMethod}</Descriptions.Item>
-              <Descriptions.Item label="Payment Status">
-                <Tag color={selectedOrder.paymentStatus === 'paid' ? 'green' : 'orange'}>
-                  {selectedOrder.paymentStatus.toUpperCase()}
-                </Tag>
-              </Descriptions.Item>
-              {selectedOrder.trackingNumber && (
-                <Descriptions.Item label="Tracking Number">{selectedOrder.trackingNumber}</Descriptions.Item>
-              )}
-            </Descriptions>
-
-            {/* Shipping Address */}
-            <Descriptions title="Shipping Address" column={1}>
-              <Descriptions.Item label="Address">
-                {selectedOrder.shippingAddress.street}<br />
-                {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} {selectedOrder.shippingAddress.zipCode}<br />
-                {selectedOrder.shippingAddress.country}
-              </Descriptions.Item>
-            </Descriptions>
-
-            {/* Order Items */}
-            <div>
-              <h3 className="text-lg font-medium mb-4">Order Items</h3>
-              <div className="space-y-3">
-                {selectedOrder.items.map((item: any, index: number) => (
-                  <div key={index} className="flex items-center space-x-4 p-3 border rounded-lg">
-                    <Avatar size={60} src={item.image} className="rounded-lg" />
-                    <div className="flex-1">
-                      <div className="font-medium">{item.productName}</div>
-                      <div className="text-sm text-gray-500">{item.variant}</div>
-                      <div className="text-sm">Quantity: {item.quantity}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-medium">${(item.price * item.quantity).toFixed(2)}</div>
-                      <div className="text-sm text-gray-500">${item.price.toFixed(2)} each</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="mt-4 pt-4 border-t">
-                <div className="flex justify-between text-lg font-semibold">
-                  <span>Total Amount:</span>
-                  <span className="text-green-600">${selectedOrder.totalAmount.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };

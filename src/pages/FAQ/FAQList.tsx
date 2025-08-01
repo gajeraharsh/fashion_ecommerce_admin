@@ -714,8 +714,8 @@ const FAQList: React.FC = () => {
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Form.Item name="featured" valuePropName="checked">
-                <Switch /> Featured FAQ
+              <Form.Item name="featured" label="Featured FAQ" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Col>
           </Row>

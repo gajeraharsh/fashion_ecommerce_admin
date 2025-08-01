@@ -13,7 +13,7 @@ import {
   Form,
   DatePicker,
   Switch,
-  message,
+  App,
   Image,
   Statistic,
   Avatar,
@@ -25,41 +25,27 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
+
   EyeOutlined,
   FileTextOutlined,
   CalendarOutlined,
-  UserOutlined,
+
   ShareAltOutlined,
   HeartOutlined,
   MessageOutlined,
-  GlobalOutlined,
+
   CheckCircleOutlined,
   CloseCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 const { Search } = Input;
 const { Option } = Select;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
+
 const { Title } = Typography;
 
 interface BlogPost {
@@ -93,16 +79,14 @@ interface BlogPost {
 }
 
 const BlogList: React.FC = () => {
+  const { message } = App.useApp();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
-  const [content, setContent] = useState('');
-  const [form] = Form.useForm();
+  const [selectedPost] = useState<BlogPost | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Mock data
@@ -217,20 +201,11 @@ const BlogList: React.FC = () => {
   };
 
   const handleCreate = () => {
-    setEditingPost(null);
-    form.resetFields();
-    setContent('');
-    setModalVisible(true);
+    navigate('/blog/new');
   };
 
   const handleEdit = (post: BlogPost) => {
-    setEditingPost(post);
-    setContent(post.content);
-    form.setFieldsValue({
-      ...post,
-      publishedAt: post.publishedAt ? dayjs(post.publishedAt) : null,
-    });
-    setModalVisible(true);
+    navigate(`/blog/edit/${post.id}`);
   };
 
   const handleSave = async (values: any) => {
@@ -300,6 +275,7 @@ const BlogList: React.FC = () => {
             height={60}
             src={record.featuredImage}
             className="rounded-lg object-cover"
+            preview={false}
             fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RUG8G+0Y4Hh0CAIHx8YAGH1AZAjWOOAI1hjjAOOYI1zjmCNA1hjjAOOYI0xjjEOOAI0wrDgA2AEOOAAOhKKbKUVKmcBGvZNfNaE..."
           />
           <div className="flex-1 min-w-0">
@@ -432,15 +408,7 @@ const BlogList: React.FC = () => {
   const totalViews = posts.reduce((sum, p) => sum + p.views, 0);
   const totalEngagement = posts.reduce((sum, p) => sum + p.likes + p.comments + p.shares, 0);
 
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
-  };
+
 
   return (
     <div className="space-y-6">
@@ -593,12 +561,11 @@ const BlogList: React.FC = () => {
               </Form.Item>
 
               <Form.Item label="Content" required>
-                <ReactQuill
-                  theme="snow"
+                <TextArea
+                  rows={12}
+                  placeholder="Enter blog post content..."
                   value={content}
-                  onChange={setContent}
-                  modules={quillModules}
-                  style={{ height: '300px', marginBottom: '50px' }}
+                  onChange={(e) => setContent(e.target.value)}
                 />
               </Form.Item>
             </Col>
@@ -644,12 +611,12 @@ const BlogList: React.FC = () => {
                 />
               </Form.Item>
 
-              <Form.Item name="featured" valuePropName="checked">
-                <Switch /> Featured Post
+              <Form.Item name="featured" label="Featured Post" valuePropName="checked">
+                <Switch />
               </Form.Item>
 
-              <Form.Item name="allowComments" valuePropName="checked" initialValue={true}>
-                <Switch /> Allow Comments
+              <Form.Item name="allowComments" label="Allow Comments" valuePropName="checked" initialValue={true}>
+                <Switch />
               </Form.Item>
 
               {/* SEO Section */}

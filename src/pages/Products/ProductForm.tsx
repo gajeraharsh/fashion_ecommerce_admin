@@ -15,7 +15,7 @@ import {
   Space,
   Table,
   Modal,
-  message,
+  App,
   Tabs,
   Collapse,
   AutoComplete,
@@ -37,8 +37,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { addProduct, updateProduct } from '../../store/slices/productSlice';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -117,6 +116,7 @@ interface ProductFormData {
 }
 
 const ProductForm: React.FC = () => {
+  const { message } = App.useApp();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -124,9 +124,6 @@ const ProductForm: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
-  const [variantModalVisible, setVariantModalVisible] = useState(false);
-  const [editingVariant, setEditingVariant] = useState<ProductVariant | null>(null);
-  const [variantForm] = Form.useForm();
   const [tags, setTags] = useState<string[]>([]);
   const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
   const [description, setDescription] = useState('');
@@ -181,33 +178,18 @@ const ProductForm: React.FC = () => {
   };
 
   const handleAddVariant = () => {
-    setEditingVariant(null);
-    variantForm.resetFields();
-    setVariantModalVisible(true);
+    navigate(`/products/${id || 'new'}/variants/new`, {
+      state: { productName: form.getFieldValue('name') || 'New Product' }
+    });
   };
 
   const handleEditVariant = (variant: ProductVariant) => {
-    setEditingVariant(variant);
-    variantForm.setFieldsValue(variant);
-    setVariantModalVisible(true);
+    navigate(`/products/${id || 'new'}/variants/edit/${variant.id}`, {
+      state: { productName: form.getFieldValue('name') || 'Product' }
+    });
   };
 
-  const handleSaveVariant = (values: any) => {
-    const variantData: ProductVariant = {
-      ...values,
-      id: editingVariant?.id || Date.now().toString(),
-      images: values.images?.fileList?.map((file: any) => file.url || file.response?.url) || [],
-    };
 
-    if (editingVariant) {
-      setVariants(variants.map(v => v.id === editingVariant.id ? variantData : v));
-    } else {
-      setVariants([...variants, variantData]);
-    }
-
-    setVariantModalVisible(false);
-    message.success('Variant saved successfully');
-  };
 
   const handleDeleteVariant = (variantId: string) => {
     setVariants(variants.filter(v => v.id !== variantId));
@@ -306,24 +288,7 @@ const ProductForm: React.FC = () => {
     },
   ];
 
-  const quillModules = {
-    toolbar: [
-      [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-      [{size: []}],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, 
-       {'indent': '-1'}, {'indent': '+1'}],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
-  };
 
-  const quillFormats = [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video'
-  ];
 
   return (
     <div className="space-y-6">
@@ -387,16 +352,12 @@ const ProductForm: React.FC = () => {
                   </Form.Item>
 
                   <Form.Item name="description" label="Full Description">
-                    <div>
-                      <ReactQuill
-                        theme="snow"
-                        value={description}
-                        onChange={setDescription}
-                        modules={quillModules}
-                        formats={quillFormats}
-                        style={{ height: '200px', marginBottom: '50px' }}
-                      />
-                    </div>
+                    <TextArea
+                      rows={8}
+                      placeholder="Enter full product description..."
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
                   </Form.Item>
 
                   <Row gutter={[16, 0]}>
@@ -519,16 +480,16 @@ const ProductForm: React.FC = () => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'featured']} valuePropName="checked">
-                    <Switch /> Featured Product
+                  <Form.Item name={['visibility', 'featured']} label="Featured Product" valuePropName="checked">
+                    <Switch />
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'visibleInCatalog']} valuePropName="checked">
-                    <Switch defaultChecked /> Visible in Catalog
+                  <Form.Item name={['visibility', 'visibleInCatalog']} label="Visible in Catalog" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'visibleInSearch']} valuePropName="checked">
-                    <Switch defaultChecked /> Visible in Search
+                  <Form.Item name={['visibility', 'visibleInSearch']} label="Visible in Search" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
                   <Form.Item name={['visibility', 'publishDate']} label="Publish Date">
@@ -538,12 +499,12 @@ const ProductForm: React.FC = () => {
 
                 {/* Inventory Settings */}
                 <Card title="Inventory" className="mb-6">
-                  <Form.Item name={['inventory', 'trackInventory']} valuePropName="checked">
-                    <Switch defaultChecked /> Track Inventory
+                  <Form.Item name={['inventory', 'trackInventory']} label="Track Inventory" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
-                  <Form.Item name={['inventory', 'allowBackorders']} valuePropName="checked">
-                    <Switch /> Allow Backorders
+                  <Form.Item name={['inventory', 'allowBackorders']} label="Allow Backorders" valuePropName="checked">
+                    <Switch />
                   </Form.Item>
 
                   <Form.Item name={['inventory', 'lowStockThreshold']} label="Low Stock Threshold">
@@ -572,8 +533,8 @@ const ProductForm: React.FC = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item name={['pricing', 'taxable']} valuePropName="checked">
-                    <Switch defaultChecked /> Taxable
+                  <Form.Item name={['pricing', 'taxable']} label="Taxable" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
                   <Form.Item name={['pricing', 'taxClass']} label="Tax Class">
@@ -702,8 +663,8 @@ const ProductForm: React.FC = () => {
                 </Col>
               </Row>
 
-              <Form.Item name={['shipping', 'freeShipping']} valuePropName="checked">
-                <Switch /> Free Shipping
+              <Form.Item name={['shipping', 'freeShipping']} label="Free Shipping" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Card>
             ),
@@ -781,136 +742,7 @@ const ProductForm: React.FC = () => {
         </div>
       </Form>
 
-      {/* Variant Modal */}
-      <Modal
-        title={editingVariant ? 'Edit Variant' : 'Add Variant'}
-        open={variantModalVisible}
-        onCancel={() => setVariantModalVisible(false)}
-        footer={null}
-        width={600}
-      >
-        <Form
-          form={variantForm}
-          layout="vertical"
-          onFinish={handleSaveVariant}
-        >
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="sku"
-                label="SKU"
-                rules={[{ required: true, message: 'Please enter SKU' }]}
-              >
-                <Input placeholder="e.g., DRS-BLK-M" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="size"
-                label="Size"
-                rules={[{ required: true, message: 'Please enter size' }]}
-              >
-                <Input placeholder="e.g., M, L, XL" />
-              </Form.Item>
-            </Col>
-          </Row>
 
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="color"
-                label="Color"
-                rules={[{ required: true, message: 'Please enter color' }]}
-              >
-                <Input placeholder="e.g., Black, White" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="stock"
-                label="Stock Quantity"
-                rules={[{ required: true, message: 'Please enter stock' }]}
-              >
-                <InputNumber min={0} style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="price"
-                label="Price"
-                rules={[{ required: true, message: 'Please enter price' }]}
-              >
-                <InputNumber
-                  min={0}
-                  precision={2}
-                  prefix="$"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="discount" label="Discount %">
-                <InputNumber
-                  min={0}
-                  max={100}
-                  suffix="%"
-                  style={{ width: '100%' }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item name="images" label="Variant Images">
-            <Upload
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={{
-                showPreviewIcon: true,
-                showRemoveIcon: true,
-              }}
-              beforeUpload={() => false}
-            >
-              {uploadButton}
-            </Upload>
-          </Form.Item>
-
-          <Collapse>
-            <Panel header="Additional Details" key="1">
-              <Form.Item name="weight" label="Weight (kg)">
-                <InputNumber min={0} precision={2} style={{ width: '100%' }} />
-              </Form.Item>
-              
-              <Row gutter={[16, 0]}>
-                <Col xs={24} sm={8}>
-                  <Form.Item name={['dimensions', 'length']} label="Length (cm)">
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Form.Item name={['dimensions', 'width']} label="Width (cm)">
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Form.Item name={['dimensions', 'height']} label="Height (cm)">
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Panel>
-          </Collapse>
-
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button onClick={() => setVariantModalVisible(false)}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              {editingVariant ? 'Update Variant' : 'Add Variant'}
-            </Button>
-          </div>
-        </Form>
-      </Modal>
     </div>
   );
 };

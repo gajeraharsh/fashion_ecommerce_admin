@@ -10,54 +10,30 @@ import {
   Row,
   Col,
   Modal,
-  Form,
-  Upload,
-  DatePicker,
-  Switch,
-  message,
-  Progress,
   Tooltip,
   Image,
   Statistic,
-  Tabs,
-  Timeline,
-  Avatar,
+  App,
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
   EyeOutlined,
-  CloudUploadOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   BarChartOutlined,
   CopyOutlined,
   SettingOutlined,
-  CalendarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
 } from '@ant-design/icons';
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts';
-import dayjs, { Dayjs } from 'dayjs';
+
+import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const { Search } = Input;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
+
 // Using modern Tabs API
 
 interface Banner {
@@ -101,15 +77,14 @@ interface Banner {
 
 const BannerList: React.FC = () => {
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [positionFilter, setPositionFilter] = useState('all');
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
   const [analyticsVisible, setAnalyticsVisible] = useState(false);
-  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const { message } = App.useApp();
 
   useEffect(() => {
     // Mock data
@@ -224,48 +199,14 @@ const BannerList: React.FC = () => {
   };
 
   const handleCreate = () => {
-    setEditingBanner(null);
-    form.resetFields();
-    setModalVisible(true);
+    navigate('/banners/new');
   };
 
   const handleEdit = (banner: Banner) => {
-    setEditingBanner(banner);
-    form.setFieldsValue({
-      ...banner,
-      dateRange: [dayjs(banner.startDate), dayjs(banner.endDate)],
-    });
-    setModalVisible(true);
+    navigate(`/banners/edit/${banner.id}`);
   };
 
-  const handleSave = async (values: any) => {
-    try {
-      const bannerData: Banner = {
-        id: editingBanner?.id || `banner_${Date.now()}`,
-        ...values,
-        startDate: values.dateRange[0].toISOString(),
-        endDate: values.dateRange[1].toISOString(),
-        clicks: editingBanner?.clicks || 0,
-        impressions: editingBanner?.impressions || 0,
-        conversionRate: editingBanner?.conversionRate || 0,
-        createdAt: editingBanner?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
 
-      if (editingBanner) {
-        setBanners(banners.map(b => b.id === editingBanner.id ? bannerData : b));
-        message.success('Banner updated successfully');
-      } else {
-        setBanners([bannerData, ...banners]);
-        message.success('Banner created successfully');
-      }
-
-      setModalVisible(false);
-      form.resetFields();
-    } catch (error) {
-      message.error('Failed to save banner');
-    }
-  };
 
   const handleDelete = (bannerId: string) => {
     Modal.confirm({
@@ -302,6 +243,7 @@ const BannerList: React.FC = () => {
             height={40}
             src={record.imageUrl}
             className="rounded object-cover"
+            preview={false}
             fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMIAAADDCAYAAADQvc6UAAABRWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSSwoyGFhYGDIzSspCnJ3UoiIjFJgf8LAwSDCIMogwMCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsis7PPOq3QdDFcvjV3jOD1boQVTPQrgSkktTgbSf4A4LbmgqISBgTEFyFYuLykAsTuAbJEioKOA7DkgdjqEvQHEToKwj4DVhAQ5A9k3gGyB5IxEoBmML4BsnSQk8XQkNtReEOBxcfXxUQg1Mjc0dyHgXNJBSWpFCYh2zi+oLMpMzyhRcASGUqqCZ16yno6CkYGRAQMDKMwhqj/fAIcloxgHQqxAjIHBEugw5sUIsSQpBobtQPdLciLEVJYzMPBHMDBsayhILEqEO4DxG0txmrERhM29nYGBddr//5/DGRjYNRkY/l7////39v///y4Dmn+LgeHANwDrkl1AuO+pmgAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAwqADAAQAAAABAAAAwwAAAAD9b/HnAAAHlklEQVR4Ae3dP3Ik1RUG8G+0Y4Hh0CAIHx8YAGH1AZAjWOOAI1hjjAOOYI1zjmCNA1hjjAOOYI0xjjEOOAI0wrDgA2AEOOAAOhKKbKUVKmcBGvZNfNaE..."
           />
           <div>
@@ -550,135 +492,7 @@ const BannerList: React.FC = () => {
         />
       </Card>
 
-      {/* Create/Edit Banner Modal */}
-      <Modal
-        title={editingBanner ? 'Edit Banner' : 'Create Banner'}
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        footer={null}
-        width={800}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSave}
-          className="mt-4"
-        >
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="name"
-                label="Banner Name"
-                rules={[{ required: true, message: 'Please enter banner name' }]}
-              >
-                <Input placeholder="Enter banner name" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item
-                name="position"
-                label="Position"
-                rules={[{ required: true, message: 'Please select position' }]}
-              >
-                <Select placeholder="Select position">
-                  <Option value="hero">Hero Banner</Option>
-                  <Option value="top">Top Banner</Option>
-                  <Option value="sidebar">Sidebar Banner</Option>
-                  <Option value="footer">Footer Banner</Option>
-                  <Option value="popup">Popup Banner</Option>
-                  <Option value="category">Category Banner</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
 
-          <Form.Item
-            name="title"
-            label="Banner Title"
-            rules={[{ required: true, message: 'Please enter banner title' }]}
-          >
-            <Input placeholder="Enter banner title" />
-          </Form.Item>
-
-          <Form.Item name="description" label="Description">
-            <Input.TextArea rows={2} placeholder="Enter banner description" />
-          </Form.Item>
-
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="linkUrl" label="Link URL">
-                <Input placeholder="https://example.com/page" />
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="linkText" label="Link Text">
-                <Input placeholder="Shop Now" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item
-            name="dateRange"
-            label="Valid Period"
-            rules={[{ required: true, message: 'Please select valid period' }]}
-          >
-            <RangePicker
-              showTime
-              style={{ width: '100%' }}
-              placeholder={['Start Date', 'End Date']}
-            />
-          </Form.Item>
-
-          <Row gutter={[16, 0]}>
-            <Col xs={24} sm={12}>
-              <Form.Item name="priority" label="Priority" initialValue={1}>
-                <Select>
-                  <Option value={1}>High (1)</Option>
-                  <Option value={2}>Medium (2)</Option>
-                  <Option value={3}>Low (3)</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col xs={24} sm={12}>
-              <Form.Item name="targetAudience" label="Target Audience" initialValue="all">
-                <Select>
-                  <Option value="all">All Users</Option>
-                  <Option value="new_users">New Users</Option>
-                  <Option value="returning_users">Returning Users</Option>
-                  <Option value="vip_users">VIP Users</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item name="devices" label="Target Devices" initialValue={['desktop', 'mobile']}>
-            <Select mode="multiple" placeholder="Select target devices">
-              <Option value="desktop">Desktop</Option>
-              <Option value="mobile">Mobile</Option>
-              <Option value="tablet">Tablet</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item name="imageUrl" label="Banner Image URL">
-            <Input placeholder="https://example.com/banner.jpg" />
-          </Form.Item>
-
-          <Form.Item name="status" label="Status" initialValue="inactive">
-            <Select>
-              <Option value="active">Active</Option>
-              <Option value="inactive">Inactive</Option>
-              <Option value="scheduled">Scheduled</Option>
-            </Select>
-          </Form.Item>
-
-          <div className="flex justify-end space-x-2 pt-4 border-t">
-            <Button onClick={() => setModalVisible(false)}>Cancel</Button>
-            <Button type="primary" htmlType="submit">
-              {editingBanner ? 'Update Banner' : 'Create Banner'}
-            </Button>
-          </div>
-        </Form>
-      </Modal>
 
       {/* Analytics Modal */}
       <Modal
@@ -717,6 +531,7 @@ const BannerList: React.FC = () => {
                           height={100}
                           src={selectedBanner.abTest.variantA.imageUrl}
                           className="rounded"
+                          preview={false}
                         />
                       </div>
                       <div className="text-center">
@@ -738,6 +553,7 @@ const BannerList: React.FC = () => {
                           height={100}
                           src={selectedBanner.abTest.variantB.imageUrl}
                           className="rounded"
+                          preview={false}
                         />
                       </div>
                       <div className="text-center">
