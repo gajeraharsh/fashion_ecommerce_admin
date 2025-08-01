@@ -33,7 +33,6 @@ import type { ColumnsType } from 'antd/es/table';
 
 const { Search } = Input;
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 interface InstagramPost {
   id: string;
