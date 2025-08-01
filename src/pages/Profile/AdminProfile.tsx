@@ -44,6 +44,7 @@ interface PasswordFormData {
 }
 
 const AdminProfile: React.FC = () => {
+  const { message } = App.useApp();
   const { user } = useSelector((state: RootState) => state.auth);
   const [profileForm] = Form.useForm();
   const [passwordForm] = Form.useForm();
