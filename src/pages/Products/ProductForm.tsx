@@ -117,6 +117,7 @@ interface ProductFormData {
 }
 
 const ProductForm: React.FC = () => {
+  const { message } = App.useApp();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
