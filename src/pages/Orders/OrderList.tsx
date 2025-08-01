@@ -27,7 +27,6 @@ import { setOrders, updateOrderStatus } from '../../store/slices/orderSlice';
 
 const { Search } = Input;
 const { Option } = Select;
-const { Step } = Steps;
 
 const OrderList: React.FC = () => {
   const { message } = App.useApp();
