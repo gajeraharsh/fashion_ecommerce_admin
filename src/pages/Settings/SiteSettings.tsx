@@ -34,6 +34,7 @@ const { Option } = Select;
 const { Title, Paragraph } = Typography;
 
 const SiteSettings: React.FC = () => {
+  const { message } = App.useApp();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('general');
