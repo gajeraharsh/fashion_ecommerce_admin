@@ -10,11 +10,13 @@ import {
   Upload,
   Collapse,
   App,
-  PageHeader,
+  Typography,
+  Space,
 } from 'antd';
 import {
   SaveOutlined,
   UploadOutlined,
+  ArrowLeftOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
@@ -116,25 +118,40 @@ const VariantForm: React.FC = () => {
 
   return (
     <div className="p-6">
-      <PageHeader
-        onBack={handleCancel}
-        title={isEditing ? 'Edit Variant' : 'Add Variant'}
-        subTitle={`${productName} - ${isEditing ? `Editing variant: ${variant?.sku}` : 'Create a new product variant'}`}
-        extra={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="save"
-            type="primary"
-            icon={<SaveOutlined />}
-            loading={loading}
-            onClick={() => form.submit()}
-          >
-            {isEditing ? 'Update Variant' : 'Add Variant'}
-          </Button>,
-        ]}
-      />
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <Space>
+              <Button
+                icon={<ArrowLeftOutlined />}
+                onClick={handleCancel}
+                type="text"
+              />
+              <div>
+                <Typography.Title level={3} className="!mb-0">
+                  {isEditing ? 'Edit Variant' : 'Add Variant'}
+                </Typography.Title>
+                <Typography.Text type="secondary">
+                  {`${productName} - ${isEditing ? `Editing variant: ${variant?.sku}` : 'Create a new product variant'}`}
+                </Typography.Text>
+              </div>
+            </Space>
+          </div>
+          <Space>
+            <Button onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={loading}
+              onClick={() => form.submit()}
+            >
+              {isEditing ? 'Update Variant' : 'Add Variant'}
+            </Button>
+          </Space>
+        </div>
+      </div>
 
       <Card>
         <Form
