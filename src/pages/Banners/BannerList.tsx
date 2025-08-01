@@ -84,6 +84,7 @@ const BannerList: React.FC = () => {
   const [selectedBanner, setSelectedBanner] = useState<Banner | null>(null);
   const [analyticsVisible, setAnalyticsVisible] = useState(false);
   const navigate = useNavigate();
+  const { message } = App.useApp();
 
   useEffect(() => {
     // Mock data
