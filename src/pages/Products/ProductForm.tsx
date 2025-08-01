@@ -498,16 +498,16 @@ const ProductForm: React.FC = () => {
                     </Select>
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'featured']} valuePropName="checked">
-                    <Switch /> Featured Product
+                  <Form.Item name={['visibility', 'featured']} label="Featured Product" valuePropName="checked">
+                    <Switch />
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'visibleInCatalog']} valuePropName="checked">
-                    <Switch defaultChecked /> Visible in Catalog
+                  <Form.Item name={['visibility', 'visibleInCatalog']} label="Visible in Catalog" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
-                  <Form.Item name={['visibility', 'visibleInSearch']} valuePropName="checked">
-                    <Switch defaultChecked /> Visible in Search
+                  <Form.Item name={['visibility', 'visibleInSearch']} label="Visible in Search" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
                   <Form.Item name={['visibility', 'publishDate']} label="Publish Date">
@@ -517,12 +517,12 @@ const ProductForm: React.FC = () => {
 
                 {/* Inventory Settings */}
                 <Card title="Inventory" className="mb-6">
-                  <Form.Item name={['inventory', 'trackInventory']} valuePropName="checked">
-                    <Switch defaultChecked /> Track Inventory
+                  <Form.Item name={['inventory', 'trackInventory']} label="Track Inventory" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
-                  <Form.Item name={['inventory', 'allowBackorders']} valuePropName="checked">
-                    <Switch /> Allow Backorders
+                  <Form.Item name={['inventory', 'allowBackorders']} label="Allow Backorders" valuePropName="checked">
+                    <Switch />
                   </Form.Item>
 
                   <Form.Item name={['inventory', 'lowStockThreshold']} label="Low Stock Threshold">
@@ -551,8 +551,8 @@ const ProductForm: React.FC = () => {
                     />
                   </Form.Item>
 
-                  <Form.Item name={['pricing', 'taxable']} valuePropName="checked">
-                    <Switch defaultChecked /> Taxable
+                  <Form.Item name={['pricing', 'taxable']} label="Taxable" valuePropName="checked">
+                    <Switch defaultChecked />
                   </Form.Item>
 
                   <Form.Item name={['pricing', 'taxClass']} label="Tax Class">
@@ -681,8 +681,8 @@ const ProductForm: React.FC = () => {
                 </Col>
               </Row>
 
-              <Form.Item name={['shipping', 'freeShipping']} valuePropName="checked">
-                <Switch /> Free Shipping
+              <Form.Item name={['shipping', 'freeShipping']} label="Free Shipping" valuePropName="checked">
+                <Switch />
               </Form.Item>
             </Card>
             ),
