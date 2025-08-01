@@ -81,7 +81,7 @@ const App: React.FC = () => {
               <Route path="faqs" element={<FAQList />} />
               <Route path="settings" element={<SiteSettings />} />
               <Route path="blog" element={<BlogList />} />
-              <Route path="instagram" element={<div className="p-6">Instagram Feed - Coming Soon</div>} />
+              <Route path="instagram" element={<InstagramFeed />} />
               <Route path="coupons" element={<CouponList />} />
               <Route path="newsletter" element={<NewsletterList />} />
               <Route path="inventory" element={<InventoryList />} />
