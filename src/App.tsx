@@ -15,9 +15,12 @@ import TransactionList from './pages/Transactions/TransactionList';
 import InventoryList from './pages/Inventory/InventoryList';
 import CouponList from './pages/Coupons/CouponList';
 import BannerList from './pages/Banners/BannerList';
+import BannerForm from './pages/Banners/BannerForm';
 import FAQList from './pages/FAQ/FAQList';
 
 import BlogList from './pages/Blog/BlogList';
+import BlogForm from './pages/Blog/BlogForm';
+import VariantForm from './pages/Products/VariantForm';
 import NewsletterList from './pages/Newsletter/NewsletterList';
 
 import SEOManager from './pages/SEO/SEOManager';
