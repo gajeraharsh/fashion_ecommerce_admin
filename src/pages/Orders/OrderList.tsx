@@ -155,8 +155,7 @@ const OrderList: React.FC = () => {
   };
 
   const showOrderDetails = (order: any) => {
-    setSelectedOrder(order);
-    setDetailsVisible(true);
+    navigate(`/orders/${order.id}`);
   };
 
   const columns = [
