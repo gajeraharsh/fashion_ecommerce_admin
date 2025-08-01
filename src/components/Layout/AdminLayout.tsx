@@ -142,6 +142,19 @@ const AdminLayout: React.FC = () => {
     navigate('/login');
   };
 
+  const handleUserMenuClick = ({ key }: { key: string }) => {
+    switch (key) {
+      case 'profile':
+        navigate('/profile');
+        break;
+      case 'settings':
+        navigate('/settings');
+        break;
+      default:
+        break;
+    }
+  };
+
   const userMenuItems = [
     {
       key: 'profile',
