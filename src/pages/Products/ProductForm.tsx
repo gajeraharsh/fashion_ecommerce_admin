@@ -178,15 +178,15 @@ const ProductForm: React.FC = () => {
   };
 
   const handleAddVariant = () => {
-    setEditingVariant(null);
-    variantForm.resetFields();
-    setVariantModalVisible(true);
+    navigate(`/products/${id || 'new'}/variants/new`, {
+      state: { productName: form.getFieldValue('name') || 'New Product' }
+    });
   };
 
   const handleEditVariant = (variant: ProductVariant) => {
-    setEditingVariant(variant);
-    variantForm.setFieldsValue(variant);
-    setVariantModalVisible(true);
+    navigate(`/products/${id || 'new'}/variants/edit/${variant.id}`, {
+      state: { productName: form.getFieldValue('name') || 'Product' }
+    });
   };
 
   const handleSaveVariant = (values: any) => {
