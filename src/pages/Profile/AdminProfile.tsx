@@ -28,7 +28,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 interface ProfileFormData {
   name: string;
