@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Row, Col, Tree, Button, Typography, Space, Table, Tag, Modal, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Card, Row, Col, Tree, Button, Typography, Space, Table, Tag, Modal, Form, Input, message } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
@@ -13,6 +13,63 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 const Categories: React.FC = () => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [expandedKeys, setExpandedKeys] = useState<string[]>(['women', 'men']);
+  const [form] = Form.useForm();
+
+  const handleExpandAll = () => {
+    const allKeys = ['women', 'men', 'accessories', 'women-clothing', 'women-shoes', 'women-accessories', 'men-clothing', 'men-shoes', 'men-accessories'];
+    setExpandedKeys(allKeys);
+  };
+
+  const handleEdit = (record: any) => {
+    setEditingCategory(record);
+    form.setFieldsValue(record);
+    setIsModalVisible(true);
+  };
+
+  const handleDelete = (record: any) => {
+    Modal.confirm({
+      title: 'Delete Category',
+      content: `Are you sure you want to delete "${record.name}"? This action cannot be undone.`,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: () => {
+        message.success(`Category "${record.name}" deleted successfully`);
+      },
+    });
+  };
+
+  const handleSave = () => {
+    form.validateFields().then(values => {
+      message.success(editingCategory ? 'Category updated successfully' : 'Category created successfully');
+      setIsModalVisible(false);
+      setEditingCategory(null);
+      form.resetFields();
+    });
+  };
+
+  const handleQuickAction = (action: string) => {
+    switch(action) {
+      case 'add-main':
+        setEditingCategory(null);
+        form.resetFields();
+        setIsModalVisible(true);
+        break;
+      case 'add-sub':
+        message.info('Select a parent category first');
+        break;
+      case 'reorder':
+        message.info('Drag and drop functionality enabled');
+        break;
+      case 'bulk-edit':
+        message.info('Bulk edit mode activated');
+        break;
+      default:
+        message.info('Feature coming soon');
+    }
+  };
   const categoryData = [
     {
       title: 'Women\'s Fashion',
@@ -149,10 +206,10 @@ const Categories: React.FC = () => {
     {
       title: 'Actions',
       key: 'actions',
-      render: () => (
+      render: (_, record) => (
         <Space>
-          <Button type="text" icon={<EditOutlined />} />
-          <Button type="text" danger icon={<DeleteOutlined />} />
+          <Button type="text" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+          <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)} />
         </Space>
       ),
     },
@@ -165,7 +222,7 @@ const Categories: React.FC = () => {
           <Title level={2} className="mb-0">Product Categories</Title>
           <p className="text-gray-600">Organize your product catalog with categories</p>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} size="large">
+        <Button type="primary" icon={<PlusOutlined />} size="large" onClick={() => handleQuickAction('add-main')}>
           Add Category
         </Button>
       </div>
@@ -201,10 +258,11 @@ const Categories: React.FC = () => {
       <Row gutter={[16, 16]}>
         {/* Category Tree */}
         <Col xs={24} lg={12}>
-          <Card title="Category Hierarchy" extra={<Button size="small">Expand All</Button>}>
+          <Card title="Category Hierarchy" extra={<Button size="small" onClick={handleExpandAll}>Expand All</Button>}>
             <Tree
               showIcon
-              defaultExpandAll
+              expandedKeys={expandedKeys}
+              onExpand={setExpandedKeys}
               defaultSelectedKeys={['women']}
               treeData={categoryData}
               className="mt-4"
@@ -260,26 +318,65 @@ const Categories: React.FC = () => {
         <Col xs={24} md={12}>
           <Card title="Quick Actions">
             <div className="space-y-3">
-              <Button block icon={<PlusOutlined />}>Add Main Category</Button>
-              <Button block icon={<AppstoreOutlined />}>Add Subcategory</Button>
-              <Button block icon={<DragOutlined />}>Reorder Categories</Button>
-              <Button block icon={<EditOutlined />}>Bulk Edit</Button>
+              <Button block icon={<PlusOutlined />} onClick={() => handleQuickAction('add-main')}>Add Main Category</Button>
+              <Button block icon={<AppstoreOutlined />} onClick={() => handleQuickAction('add-sub')}>Add Subcategory</Button>
+              <Button block icon={<DragOutlined />} onClick={() => handleQuickAction('reorder')}>Reorder Categories</Button>
+              <Button block icon={<EditOutlined />} onClick={() => handleQuickAction('bulk-edit')}>Bulk Edit</Button>
             </div>
           </Card>
         </Col>
         <Col xs={24} md={12}>
           <Card title="Category Templates">
             <div className="space-y-3">
-              <Button block>Fashion Store Template</Button>
-              <Button block>Electronics Template</Button>
-              <Button block>Home & Garden Template</Button>
-              <Button block>Custom Template</Button>
+              <Button block onClick={() => handleQuickAction('fashion-template')}>Fashion Store Template</Button>
+              <Button block onClick={() => handleQuickAction('electronics-template')}>Electronics Template</Button>
+              <Button block onClick={() => handleQuickAction('home-template')}>Home & Garden Template</Button>
+              <Button block onClick={() => handleQuickAction('custom-template')}>Custom Template</Button>
             </div>
           </Card>
         </Col>
       </Row>
+
+      {/* Category Modal */}
+      <Modal
+        title={editingCategory ? 'Edit Category' : 'Add Category'}
+        open={isModalVisible}
+        onOk={handleSave}
+        onCancel={() => {
+          setIsModalVisible(false);
+          setEditingCategory(null);
+          form.resetFields();
+        }}
+        width={600}
+      >
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Category Name"
+            rules={[{ required: true, message: 'Please enter category name' }]}
+          >
+            <Input placeholder="Enter category name" />
+          </Form.Item>
+          <Form.Item
+            name="description"
+            label="Description"
+          >
+            <TextArea rows={3} placeholder="Enter category description" />
+          </Form.Item>
+          <Form.Item
+            name="status"
+            label="Status"
+            initialValue="active"
+          >
+            <select className="w-full p-2 border rounded">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
-};
+}
 
 export default Categories;
