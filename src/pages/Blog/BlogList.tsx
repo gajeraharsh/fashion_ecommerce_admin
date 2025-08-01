@@ -53,8 +53,6 @@ import {
   Cell,
 } from 'recharts';
 
-const { TextArea } = Input;
-
 import dayjs from 'dayjs';
 
 const { Search } = Input;
