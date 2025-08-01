@@ -106,6 +106,60 @@ const NewsletterList: React.FC = () => {
   const [editingNewsletter, setEditingNewsletter] = useState<Newsletter | null>(null);
   const [form] = Form.useForm();
 
+  // Button handlers
+  const handleViewCampaign = (record: Newsletter) => {
+    message.info(`Viewing campaign: ${record.name}`);
+  };
+
+  const handleCopyCampaign = (record: Newsletter) => {
+    message.success(`Campaign "${record.name}" duplicated successfully`);
+  };
+
+  const handleViewSubscriber = (record: Subscriber) => {
+    message.info(`Viewing subscriber profile: ${record.email}`);
+  };
+
+  const handleEditSubscriber = (record: Subscriber) => {
+    message.info(`Editing subscriber: ${record.email}`);
+  };
+
+  const handleUnsubscribe = (record: Subscriber) => {
+    Modal.confirm({
+      title: 'Unsubscribe User',
+      content: `Are you sure you want to unsubscribe ${record.email}?`,
+      onOk: () => message.success('User unsubscribed successfully'),
+    });
+  };
+
+  const handleAddSubscriber = () => {
+    message.info('Opening add subscriber form');
+  };
+
+  const handleExportSubscribers = () => {
+    const headers = ['Email', 'Name', 'Status', 'Subscribed Date'];
+    const data = filteredSubscribers.map(sub => [
+      sub.email,
+      sub.name,
+      sub.status,
+      sub.subscribeDate
+    ]);
+
+    const csvContent = [headers, ...data]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'subscribers.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('Subscribers exported successfully');
+  };
+
   // Mock data
   useEffect(() => {
     setNewsletters([
