@@ -13,7 +13,7 @@ import {
   Form,
   DatePicker,
   Switch,
-  message,
+  App,
   Image,
   Statistic,
   Avatar,
