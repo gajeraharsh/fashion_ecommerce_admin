@@ -51,7 +51,6 @@ const AdminLayout: React.FC = () => {
       label: 'User Management',
       children: [
         { key: '/users', label: 'All Users' },
-        { key: '/users/roles', label: 'Roles & Permissions' },
       ],
     },
     {
@@ -85,11 +84,7 @@ const AdminLayout: React.FC = () => {
       icon: <QuestionCircleOutlined />,
       label: 'FAQ Management',
     },
-    {
-      key: '/settings',
-      icon: <SettingOutlined />,
-      label: 'Site Settings',
-    },
+
     {
       key: '/blog',
       icon: <FileTextOutlined />,
@@ -121,11 +116,7 @@ const AdminLayout: React.FC = () => {
       icon: <FileSearchOutlined />,
       label: 'SEO Management',
     },
-    {
-      key: '/pages',
-      icon: <FileTextOutlined />,
-      label: 'Page Management',
-    },
+
     {
       key: '/audit',
       icon: <SafetyOutlined />,
