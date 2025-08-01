@@ -201,20 +201,11 @@ const BlogList: React.FC = () => {
   };
 
   const handleCreate = () => {
-    setEditingPost(null);
-    form.resetFields();
-    setContent('');
-    setModalVisible(true);
+    navigate('/blog/new');
   };
 
   const handleEdit = (post: BlogPost) => {
-    setEditingPost(post);
-    setContent(post.content);
-    form.setFieldsValue({
-      ...post,
-      publishedAt: post.publishedAt ? dayjs(post.publishedAt) : null,
-    });
-    setModalVisible(true);
+    navigate(`/blog/edit/${post.id}`);
   };
 
   const handleSave = async (values: any) => {
