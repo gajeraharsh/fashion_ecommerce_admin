@@ -13,6 +13,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 const Categories: React.FC = () => {
+  const { message } = App.useApp();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState<any>(null);
   const [expandedKeys, setExpandedKeys] = useState<string[]>(['women', 'men']);
