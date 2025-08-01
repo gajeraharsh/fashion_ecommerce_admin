@@ -37,11 +37,13 @@ import {
   Cell,
 } from 'recharts';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
 import { setStats, setSalesData, setTopProducts, setRecentOrders } from '../../store/slices/dashboardSlice';
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { stats, salesData, topProducts, recentOrders } = useSelector((state: RootState) => state.dashboard);
 
   useEffect(() => {
@@ -123,8 +125,13 @@ const Dashboard: React.FC = () => {
     {
       title: 'Action',
       key: 'action',
-      render: () => (
-        <Button type="link" icon={<EyeOutlined />} size="small">
+      render: (_, record) => (
+        <Button
+          type="link"
+          icon={<EyeOutlined />}
+          size="small"
+          onClick={() => navigate(`/orders`)}
+        >
           View
         </Button>
       ),
@@ -259,7 +266,7 @@ const Dashboard: React.FC = () => {
         <Col span={24}>
           <Card 
             title="Recent Orders" 
-            extra={<Button type="primary">View All Orders</Button>}
+            extra={<Button type="primary" onClick={() => navigate('/orders')}>View All Orders</Button>}
           >
             <Table
               columns={orderColumns}
