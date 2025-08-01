@@ -14,6 +14,7 @@ const { Dragger } = Upload;
 const { Step } = Steps;
 
 const BulkUpload: React.FC = () => {
+  const { message } = App.useApp();
   const [currentStep, setCurrentStep] = useState(0);
   const [uploading, setUploading] = useState(false);
 
