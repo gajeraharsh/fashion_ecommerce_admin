@@ -9,7 +9,7 @@ import {
   Select,
   Switch,
   Upload,
-  message,
+  App,
   Tabs,
   Divider,
   Space,
