@@ -14,7 +14,7 @@ import {
   GiftOutlined,
   MailOutlined,
   InboxOutlined,
-  TeamOutlined,
+
   SafetyOutlined,
   FileSearchOutlined,
   LogoutOutlined,
