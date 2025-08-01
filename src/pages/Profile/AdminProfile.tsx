@@ -10,10 +10,10 @@ import {
   Col,
   Typography,
   Divider,
-  message,
   Space,
   Tabs,
   Alert,
+  App,
 } from 'antd';
 import {
   UserOutlined,
