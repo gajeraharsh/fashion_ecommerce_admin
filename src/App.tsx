@@ -72,6 +72,8 @@ const App: React.FC = () => {
               <Route path="products" element={<ProductList />} />
               <Route path="products/add" element={<ProductForm />} />
               <Route path="products/edit/:id" element={<ProductForm />} />
+              <Route path="products/:productId/variants/new" element={<VariantForm />} />
+              <Route path="products/:productId/variants/edit/:variantId" element={<VariantForm />} />
               <Route path="orders" element={<OrderList />} />
               {/* Add more routes for other modules */}
               <Route path="users" element={<UserList />} />
@@ -82,9 +84,13 @@ const App: React.FC = () => {
               <Route path="products/bulk-upload" element={<BulkUpload />} />
               <Route path="transactions" element={<TransactionList />} />
               <Route path="banners" element={<BannerList />} />
+              <Route path="banners/new" element={<BannerForm />} />
+              <Route path="banners/edit/:id" element={<BannerForm />} />
               <Route path="faqs" element={<FAQList />} />
 
               <Route path="blog" element={<BlogList />} />
+              <Route path="blog/new" element={<BlogForm />} />
+              <Route path="blog/edit/:id" element={<BlogForm />} />
               <Route path="instagram" element={<InstagramFeed />} />
               <Route path="coupons" element={<CouponList />} />
               <Route path="newsletter" element={<NewsletterList />} />
