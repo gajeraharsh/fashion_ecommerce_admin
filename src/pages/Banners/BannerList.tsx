@@ -11,53 +11,30 @@ import {
   Col,
   Modal,
   Form,
-  Upload,
   DatePicker,
-  Switch,
   message,
-  Progress,
   Tooltip,
   Image,
   Statistic,
-  Tabs,
-  Timeline,
-  Avatar,
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
   EyeOutlined,
-  CloudUploadOutlined,
   PlayCircleOutlined,
   PauseCircleOutlined,
   BarChartOutlined,
   CopyOutlined,
   SettingOutlined,
-  CalendarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
 } from '@ant-design/icons';
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts';
-import dayjs, { Dayjs } from 'dayjs';
+
+import dayjs from 'dayjs';
 
 const { Search } = Input;
 const { Option } = Select;
-const { RangePicker } = DatePicker;
+
 // Using modern Tabs API
 
 interface Banner {
