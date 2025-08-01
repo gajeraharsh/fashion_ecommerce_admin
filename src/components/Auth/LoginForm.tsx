@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Card, message, Checkbox } from 'antd';
+import { Form, Input, Button, Card, Checkbox, App } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
+  const { message } = App.useApp();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state: RootState) => state.auth);
