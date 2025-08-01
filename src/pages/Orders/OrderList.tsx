@@ -246,7 +246,7 @@ const OrderList: React.FC = () => {
           <Button
             type="text"
             icon={<PrinterOutlined />}
-            onClick={() => message.info('Downloading invoice...')}
+            onClick={() => downloadInvoice(record)}
           >
             Invoice
           </Button>
