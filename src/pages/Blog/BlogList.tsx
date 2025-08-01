@@ -433,15 +433,7 @@ const BlogList: React.FC = () => {
   const totalViews = posts.reduce((sum, p) => sum + p.views, 0);
   const totalEngagement = posts.reduce((sum, p) => sum + p.likes + p.comments + p.shares, 0);
 
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
-  };
+
 
   return (
     <div className="space-y-6">
