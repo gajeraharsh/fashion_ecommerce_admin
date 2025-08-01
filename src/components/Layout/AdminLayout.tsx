@@ -166,14 +166,19 @@ const AdminLayout: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
-        trigger={null} 
-        collapsible 
+      <Sider
+        trigger={null}
+        collapsible
         collapsed={collapsed}
         width={250}
         style={{
           background: colorBgContainer,
           boxShadow: '2px 0 8px 0 rgba(29,35,41,.05)',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          bottom: 0,
+          zIndex: 1000,
         }}
       >
         <div className="flex items-center justify-center h-16 border-b border-gray-200">
@@ -187,13 +192,12 @@ const AdminLayout: React.FC = () => {
           style={{
             border: 'none',
             height: 'calc(100vh - 64px)',
-            overflowY: 'auto',
           }}
           items={menuItems}
           onClick={handleMenuClick}
         />
       </Sider>
-      <Layout>
+      <Layout style={{ marginLeft: collapsed ? 80 : 250, transition: 'margin-left 0.2s' }}>
         <Header
           style={{
             padding: '0 24px',
