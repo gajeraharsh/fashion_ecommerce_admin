@@ -124,9 +124,6 @@ const ProductForm: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [variants, setVariants] = useState<ProductVariant[]>([]);
-  const [variantModalVisible, setVariantModalVisible] = useState(false);
-  const [editingVariant, setEditingVariant] = useState<ProductVariant | null>(null);
-  const [variantForm] = Form.useForm();
   const [tags, setTags] = useState<string[]>([]);
   const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
   const [description, setDescription] = useState('');
