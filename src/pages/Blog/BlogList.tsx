@@ -25,40 +25,27 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
+
   EyeOutlined,
   FileTextOutlined,
   CalendarOutlined,
-  UserOutlined,
+
   ShareAltOutlined,
   HeartOutlined,
   MessageOutlined,
-  GlobalOutlined,
+
   CheckCircleOutlined,
   CloseCircleOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as RechartsTooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts';
+
 
 import dayjs from 'dayjs';
 
 const { Search } = Input;
 const { Option } = Select;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
+
 const { Title } = Typography;
 
 interface BlogPost {
@@ -94,11 +81,11 @@ interface BlogPost {
 const BlogList: React.FC = () => {
   const { message } = App.useApp();
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedPost] = useState<BlogPost | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [content, setContent] = useState('');
