@@ -96,6 +96,7 @@ interface Subscriber {
 }
 
 const NewsletterList: React.FC = () => {
+  const { message } = App.useApp();
   const [newsletters, setNewsletters] = useState<Newsletter[]>([]);
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(false);
