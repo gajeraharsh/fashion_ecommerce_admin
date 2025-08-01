@@ -718,6 +718,7 @@ const BannerList: React.FC = () => {
                           height={100}
                           src={selectedBanner.abTest.variantA.imageUrl}
                           className="rounded"
+                          preview={false}
                         />
                       </div>
                       <div className="text-center">
@@ -739,6 +740,7 @@ const BannerList: React.FC = () => {
                           height={100}
                           src={selectedBanner.abTest.variantB.imageUrl}
                           className="rounded"
+                          preview={false}
                         />
                       </div>
                       <div className="text-center">
