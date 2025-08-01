@@ -388,13 +388,11 @@ const ProductForm: React.FC = () => {
                   </Form.Item>
 
                   <Form.Item name="description" label="Full Description">
-                    <ReactQuill
-                      theme="snow"
+                    <TextArea
+                      rows={8}
+                      placeholder="Enter full product description..."
                       value={description}
-                      onChange={setDescription}
-                      modules={quillModules}
-                      formats={quillFormats}
-                      style={{ height: '200px', marginBottom: '50px' }}
+                      onChange={(e) => setDescription(e.target.value)}
                     />
                   </Form.Item>
 
