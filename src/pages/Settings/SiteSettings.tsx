@@ -15,6 +15,7 @@ import {
   Space,
   Typography,
   ColorPicker,
+  Modal,
 } from 'antd';
 import {
   SaveOutlined,
