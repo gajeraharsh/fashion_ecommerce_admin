@@ -132,16 +132,7 @@ const OrderList: React.FC = () => {
     return colors[status as keyof typeof colors] || 'default';
   };
 
-  const getStatusStep = (status: string) => {
-    const steps = {
-      placed: 0,
-      packed: 1,
-      shipped: 2,
-      delivered: 3,
-      returned: 4,
-    };
-    return steps[status as keyof typeof steps] || 0;
-  };
+
 
   const handleStatusUpdate = (orderId: string, newStatus: any) => {
     dispatch(updateOrderStatus({ orderId, status: newStatus }));
