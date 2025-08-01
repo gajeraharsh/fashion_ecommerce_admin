@@ -37,11 +37,10 @@ const { Step } = Steps;
 const OrderList: React.FC = () => {
   const { message } = App.useApp();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { orders, loading } = useSelector((state: RootState) => state.orders);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [detailsVisible, setDetailsVisible] = useState(false);
 
   const downloadInvoice = (order: any) => {
     const invoiceData = `Invoice for Order ${order.id}\n\nCustomer: ${order.customerName}\nEmail: ${order.customerEmail}\nAmount: $${order.total}\nDate: ${order.date}\nStatus: ${order.status}\n\nThank you for your business!`;
