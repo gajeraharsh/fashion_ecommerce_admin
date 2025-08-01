@@ -215,7 +215,7 @@ const BannerList: React.FC = () => {
     setModalVisible(true);
   };
 
-  const handleSave = async (values: any) => {
+  const handleSave = async (values: Partial<Banner>) => {
     try {
       const bannerData: Banner = {
         id: editingBanner?.id || `banner_${Date.now()}`,
