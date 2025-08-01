@@ -10,10 +10,12 @@ import {
   DatePicker,
   Switch,
   App,
-  PageHeader,
+  Typography,
+  Space,
 } from 'antd';
 import {
   SaveOutlined,
+  ArrowLeftOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -137,25 +139,40 @@ const BlogForm: React.FC = () => {
 
   return (
     <div className="p-6">
-      <PageHeader
-        onBack={handleCancel}
-        title={isEditing ? 'Edit Blog Post' : 'Create Blog Post'}
-        subTitle={isEditing ? `Editing: ${post?.title}` : 'Create a new blog post'}
-        extra={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="save"
-            type="primary"
-            icon={<SaveOutlined />}
-            loading={loading}
-            onClick={() => form.submit()}
-          >
-            {isEditing ? 'Update Post' : 'Create Post'}
-          </Button>,
-        ]}
-      />
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <Space>
+              <Button
+                icon={<ArrowLeftOutlined />}
+                onClick={handleCancel}
+                type="text"
+              />
+              <div>
+                <Typography.Title level={3} className="!mb-0">
+                  {isEditing ? 'Edit Blog Post' : 'Create Blog Post'}
+                </Typography.Title>
+                <Typography.Text type="secondary">
+                  {isEditing ? `Editing: ${post?.title}` : 'Create a new blog post'}
+                </Typography.Text>
+              </div>
+            </Space>
+          </div>
+          <Space>
+            <Button onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={loading}
+              onClick={() => form.submit()}
+            >
+              {isEditing ? 'Update Post' : 'Create Post'}
+            </Button>
+          </Space>
+        </div>
+      </div>
 
       <Card>
         <Form
