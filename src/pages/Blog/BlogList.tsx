@@ -52,8 +52,7 @@ import {
   Pie,
   Cell,
 } from 'recharts';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 import dayjs from 'dayjs';
 
 const { Search } = Input;
@@ -593,12 +592,11 @@ const BlogList: React.FC = () => {
               </Form.Item>
 
               <Form.Item label="Content" required>
-                <ReactQuill
-                  theme="snow"
+                <TextArea
+                  rows={12}
+                  placeholder="Enter blog post content..."
                   value={content}
-                  onChange={setContent}
-                  modules={quillModules}
-                  style={{ height: '300px', marginBottom: '50px' }}
+                  onChange={(e) => setContent(e.target.value)}
                 />
               </Form.Item>
             </Col>
