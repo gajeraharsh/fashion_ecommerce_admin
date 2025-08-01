@@ -39,7 +39,7 @@ const LoginForm: React.FC = () => {
       dispatch(loginSuccess({ user: mockUser, token: mockToken }));
       message.success('Login successful!');
       navigate('/dashboard');
-    } catch (error) {
+    } catch {
       dispatch(loginFailure());
       message.error('Login failed. Please try again.');
     }
