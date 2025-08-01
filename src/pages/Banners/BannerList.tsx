@@ -208,34 +208,7 @@ const BannerList: React.FC = () => {
     navigate(`/banners/edit/${banner.id}`);
   };
 
-  const handleSave = async (values: Partial<Banner>) => {
-    try {
-      const bannerData: Banner = {
-        id: editingBanner?.id || `banner_${Date.now()}`,
-        ...values,
-        startDate: values.dateRange[0].toISOString(),
-        endDate: values.dateRange[1].toISOString(),
-        clicks: editingBanner?.clicks || 0,
-        impressions: editingBanner?.impressions || 0,
-        conversionRate: editingBanner?.conversionRate || 0,
-        createdAt: editingBanner?.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
 
-      if (editingBanner) {
-        setBanners(banners.map(b => b.id === editingBanner.id ? bannerData : b));
-        message.success('Banner updated successfully');
-      } else {
-        setBanners([bannerData, ...banners]);
-        message.success('Banner created successfully');
-      }
-
-      setModalVisible(false);
-      form.resetFields();
-    } catch {
-      message.error('Failed to save banner');
-    }
-  };
 
   const handleDelete = (bannerId: string) => {
     Modal.confirm({
