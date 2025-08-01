@@ -9,7 +9,8 @@ import {
   Col,
   DatePicker,
   App,
-  PageHeader,
+  Typography,
+  Space,
 } from 'antd';
 import {
   SaveOutlined,
@@ -124,25 +125,40 @@ const BannerForm: React.FC = () => {
 
   return (
     <div className="p-6">
-      <PageHeader
-        onBack={handleCancel}
-        title={isEditing ? 'Edit Banner' : 'Create Banner'}
-        subTitle={isEditing ? `Editing banner: ${banner?.name}` : 'Create a new banner for your website'}
-        extra={[
-          <Button key="cancel" onClick={handleCancel}>
-            Cancel
-          </Button>,
-          <Button
-            key="save"
-            type="primary"
-            icon={<SaveOutlined />}
-            loading={loading}
-            onClick={() => form.submit()}
-          >
-            {isEditing ? 'Update Banner' : 'Create Banner'}
-          </Button>,
-        ]}
-      />
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <Space>
+              <Button
+                icon={<ArrowLeftOutlined />}
+                onClick={handleCancel}
+                type="text"
+              />
+              <div>
+                <Typography.Title level={3} className="!mb-0">
+                  {isEditing ? 'Edit Banner' : 'Create Banner'}
+                </Typography.Title>
+                <Typography.Text type="secondary">
+                  {isEditing ? `Editing banner: ${banner?.name}` : 'Create a new banner for your website'}
+                </Typography.Text>
+              </div>
+            </Space>
+          </div>
+          <Space>
+            <Button onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={loading}
+              onClick={() => form.submit()}
+            >
+              {isEditing ? 'Update Banner' : 'Create Banner'}
+            </Button>
+          </Space>
+        </div>
+      </div>
 
       <Card>
         <Form
