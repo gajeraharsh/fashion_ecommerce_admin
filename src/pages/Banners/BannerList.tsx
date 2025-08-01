@@ -201,9 +201,7 @@ const BannerList: React.FC = () => {
   };
 
   const handleCreate = () => {
-    setEditingBanner(null);
-    form.resetFields();
-    setModalVisible(true);
+    navigate('/banners/new');
   };
 
   const handleEdit = (banner: Banner) => {
