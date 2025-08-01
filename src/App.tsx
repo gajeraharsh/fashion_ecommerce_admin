@@ -90,6 +90,7 @@ const App: React.FC = () => {
               <Route path="seo" element={<SEOManager />} />
               <Route path="pages" element={<PageManager />} />
               <Route path="audit" element={<AuditLogs />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
           </Routes>
           </Router>
