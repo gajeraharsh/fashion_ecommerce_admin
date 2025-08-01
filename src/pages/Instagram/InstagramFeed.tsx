@@ -132,9 +132,9 @@ const InstagramFeed: React.FC = () => {
       key: 'image',
       width: 80,
       render: (imageUrl: string, record: InstagramPost) => (
-        <Avatar 
-          size={60} 
-          src={<Image src={imageUrl} preview={false} />}
+        <Avatar
+          size={60}
+          src={imageUrl}
           shape="square"
         />
       ),
