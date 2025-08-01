@@ -239,7 +239,7 @@ const BannerList: React.FC = () => {
 
       setModalVisible(false);
       form.resetFields();
-    } catch (error) {
+    } catch {
       message.error('Failed to save banner');
     }
   };
