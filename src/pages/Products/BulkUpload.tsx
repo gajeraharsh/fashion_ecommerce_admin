@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Row, Col, Upload, Button, Typography, Steps, Table, Progress, Alert } from 'antd';
+import React, { useState } from 'react';
+import { Card, Row, Col, Upload, Button, Typography, Steps, Table, Progress, Alert, message } from 'antd';
 import {
   CloudUploadOutlined,
   DownloadOutlined,
@@ -14,6 +14,47 @@ const { Dragger } = Upload;
 const { Step } = Steps;
 
 const BulkUpload: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [uploading, setUploading] = useState(false);
+
+  const downloadTemplate = () => {
+    // Create a simple CSV template
+    const headers = ['Product Name', 'SKU', 'Category', 'Price', 'Stock Quantity', 'Description', 'Brand'];
+    const sampleData = [
+      ['Sample Product 1', 'SKU001', 'Women/Clothing/Dresses', '29.99', '100', 'Beautiful summer dress', 'Fashion Brand'],
+      ['Sample Product 2', 'SKU002', 'Men/Clothing/Shirts', '39.99', '50', 'Comfortable cotton shirt', 'Style Co']
+    ];
+
+    const csvContent = [headers, ...sampleData]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'product_upload_template.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    message.success('Template downloaded successfully');
+  };
+
+  const processUpload = () => {
+    setUploading(true);
+    // Simulate processing
+    setTimeout(() => {
+      setUploading(false);
+      setCurrentStep(3);
+      message.success('File processed successfully! 45 products imported.');
+    }, 3000);
+  };
+
+  const downloadSampleTemplate = () => {
+    downloadTemplate();
+    message.info('Sample template with example data downloaded');
+  };
   const uploadHistory = [
     {
       key: '1',
@@ -113,14 +154,14 @@ const BulkUpload: React.FC = () => {
           <Title level={2} className="mb-0">Bulk Product Upload</Title>
           <p className="text-gray-600">Upload multiple products using CSV or Excel files</p>
         </div>
-        <Button icon={<DownloadOutlined />} size="large">
+        <Button icon={<DownloadOutlined />} size="large" onClick={downloadTemplate}>
           Download Template
         </Button>
       </div>
 
       {/* Upload Process Steps */}
       <Card>
-        <Steps current={0} className="mb-6">
+        <Steps current={currentStep} className="mb-6">
           <Step title="Download Template" description="Get the correct format" />
           <Step title="Prepare Data" description="Fill in product information" />
           <Step title="Upload File" description="Upload your completed file" />
@@ -156,10 +197,16 @@ const BulkUpload: React.FC = () => {
             </Dragger>
 
             <div className="space-y-3">
-              <Button block type="primary" size="large">
-                Process Upload
+              <Button
+                block
+                type="primary"
+                size="large"
+                loading={uploading}
+                onClick={processUpload}
+              >
+                {uploading ? 'Processing...' : 'Process Upload'}
               </Button>
-              <Button block icon={<FileExcelOutlined />}>
+              <Button block icon={<FileExcelOutlined />} onClick={downloadSampleTemplate}>
                 Download Sample Template
               </Button>
             </div>
