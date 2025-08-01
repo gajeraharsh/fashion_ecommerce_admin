@@ -241,7 +241,7 @@ const AdminLayout: React.FC = () => {
                 className="text-gray-600 hover:text-blue-600"
               />
             </Badge>
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+            <Dropdown menu={{ items: userMenuItems, onClick: handleUserMenuClick }} placement="bottomRight">
               <div className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 px-3 py-2 rounded-lg">
                 <Avatar icon={<UserOutlined />} />
                 <div className="hidden sm:block">
