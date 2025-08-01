@@ -442,13 +442,13 @@ const NewsletterList: React.FC = () => {
       render: (record: Subscriber) => (
         <Space size="small">
           <Tooltip title="View Profile">
-            <Button size="small" icon={<EyeOutlined />} />
+            <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewSubscriber(record)} />
           </Tooltip>
           <Tooltip title="Edit">
-            <Button size="small" icon={<EditOutlined />} />
+            <Button size="small" icon={<EditOutlined />} onClick={() => handleEditSubscriber(record)} />
           </Tooltip>
           <Tooltip title="Unsubscribe">
-            <Button size="small" icon={<UserDeleteOutlined />} />
+            <Button size="small" icon={<UserDeleteOutlined />} onClick={() => handleUnsubscribe(record)} />
           </Tooltip>
         </Space>
       ),
