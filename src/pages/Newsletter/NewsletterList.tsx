@@ -373,13 +373,13 @@ const NewsletterList: React.FC = () => {
       render: (record: Newsletter) => (
         <Space size="small">
           <Tooltip title="View">
-            <Button size="small" icon={<EyeOutlined />} />
+            <Button size="small" icon={<EyeOutlined />} onClick={() => handleViewCampaign(record)} />
           </Tooltip>
           <Tooltip title="Edit">
             <Button size="small" icon={<EditOutlined />} onClick={() => handleEditNewsletter(record)} />
           </Tooltip>
           <Tooltip title="Copy">
-            <Button size="small" icon={<CopyOutlined />} />
+            <Button size="small" icon={<CopyOutlined />} onClick={() => handleCopyCampaign(record)} />
           </Tooltip>
           <Tooltip title="Delete">
             <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDeleteNewsletter(record.id)} />
@@ -544,10 +544,10 @@ const NewsletterList: React.FC = () => {
                 <Option value="unsubscribed">Unsubscribed</Option>
                 <Option value="bounced">Bounced</Option>
               </Select>
-              <Button type="primary" icon={<UserAddOutlined />}>
+              <Button type="primary" icon={<UserAddOutlined />} onClick={handleAddSubscriber}>
                 Add Subscriber
               </Button>
-              <Button icon={<FileExcelOutlined />}>Export</Button>
+              <Button icon={<FileExcelOutlined />} onClick={handleExportSubscribers}>Export</Button>
             </div>
           </Card>
 
