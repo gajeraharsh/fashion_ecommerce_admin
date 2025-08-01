@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import ProductList from './pages/Products/ProductList';
 import ProductForm from './pages/Products/ProductForm';
 import OrderList from './pages/Orders/OrderList';
+import OrderDetails from './pages/Orders/OrderDetails';
 import UserList from './pages/Users/UserList';
 import UserForm from './pages/Users/UserForm';
 import TransactionList from './pages/Transactions/TransactionList';
