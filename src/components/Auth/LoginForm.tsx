@@ -1,123 +1,195 @@
-import React from 'react';
-import { Form, Input, Button, Card, Checkbox, App } from 'antd';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Card, Alert, Typography, Space, Divider } from 'antd';
+import { UserOutlined, LockOutlined, LoginOutlined, ShopOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginStart, loginSuccess, loginFailure } from '../../store/slices/authSlice';
-import { RootState } from '../../store';
+import { loginUser, clearError } from '../../store/slices/authSlice';
+import { RootState, AppDispatch } from '../../store';
+import authService from '../../services/authService';
 
-interface LoginFormValues {
+const { Title, Text } = Typography;
+
+interface LoginFormData {
   email: string;
   password: string;
-  remember: boolean;
 }
 
 const LoginForm: React.FC = () => {
-  const { message } = App.useApp();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { loading } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error, isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const [form] = Form.useForm();
 
-  const onFinish = async (values: LoginFormValues) => {
-    dispatch(loginStart());
+  useEffect(() => {
+    // Clear any previous errors when component mounts
+    dispatch(clearError());
     
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful login
-      const mockUser = {
-        id: '1',
-        email: values.email,
-        name: 'Admin User',
-        role: 'admin',
-        permissions: ['all'],
-      };
-      
-      const mockToken = 'mock-jwt-token-12345';
-      
-      dispatch(loginSuccess({ user: mockUser, token: mockToken }));
-      message.success('Login successful!');
+    // Redirect if already authenticated and is admin
+    if (isAuthenticated && user && authService.isAdmin()) {
       navigate('/dashboard');
-    } catch {
-      dispatch(loginFailure());
-      message.error('Login failed. Please try again.');
+    }
+  }, [dispatch, isAuthenticated, user, navigate]);
+
+  const onFinish = async (values: LoginFormData) => {
+    try {
+      const result = await dispatch(loginUser(values)).unwrap();
+      
+      // Check if user is admin
+      if (result.user.role !== 'ADMIN') {
+        dispatch(clearError());
+        form.setFields([
+          {
+            name: 'email',
+            errors: ['Admin access required. Please contact your administrator.']
+          }
+        ]);
+        // Logout the non-admin user
+        authService.logout();
+        return;
+      }
+      
+      // Redirect to dashboard on successful admin login
+      navigate('/dashboard');
+    } catch (error) {
+      // Error is already handled by the rejected case in the slice
+      console.error('Login failed:', error);
     }
   };
 
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Fashion Admin</h1>
-          <p className="text-gray-600">Sign in to your admin account</p>
-        </div>
-        
-        <Card className="shadow-xl border-0" style={{ borderRadius: '12px' }}>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      padding: '20px'
+    }}>
+      <Card
+        style={{
+          width: '100%',
+          maxWidth: 420,
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+          borderRadius: '16px',
+          border: 'none'
+        }}
+        bodyStyle={{ padding: '40px' }}
+      >
+        <Space direction="vertical" size="large" style={{ width: '100%', textAlign: 'center' }}>
+          <div>
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #1890ff, #722ed1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              boxShadow: '0 8px 20px rgba(24, 144, 255, 0.3)'
+            }}>
+              <ShopOutlined style={{ fontSize: '36px', color: 'white' }} />
+            </div>
+            <Title level={2} style={{ margin: '0 0 8px 0', color: '#262626', fontWeight: 600 }}>
+              Fashion Admin
+            </Title>
+            <Text type="secondary" style={{ fontSize: '15px' }}>
+              Welcome back! Please sign in to your admin account.
+            </Text>
+          </div>
+
+          <Divider style={{ margin: '20px 0' }} />
+
+          {error && (
+            <Alert
+              message="Login Failed"
+              description={error}
+              type="error"
+              showIcon
+              closable
+              onClose={() => dispatch(clearError())}
+              style={{ textAlign: 'left', borderRadius: '8px' }}
+            />
+          )}
+
           <Form
-            name="login"
-            initialValues={{ remember: true }}
+            form={form}
+            name="adminLogin"
             onFinish={onFinish}
-            size="large"
+            onFinishFailed={onFinishFailed}
             layout="vertical"
+            size="large"
+            autoComplete="off"
           >
             <Form.Item
               name="email"
-              label="Email"
+              label={<span style={{ fontWeight: 500 }}>Email Address</span>}
               rules={[
-                { required: true, message: 'Please input your email!' },
-                { type: 'email', message: 'Please enter a valid email!' },
+                { required: true, message: 'Please input your email address!' },
+                { type: 'email', message: 'Please enter a valid email address!' }
               ]}
             >
-              <Input 
-                prefix={<MailOutlined className="text-gray-400" />} 
-                placeholder="admin@fashion.com"
-                className="rounded-lg"
+              <Input
+                prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
+                placeholder="admin@example.com"
+                autoComplete="email"
+                style={{ borderRadius: '8px', padding: '12px' }}
               />
             </Form.Item>
 
             <Form.Item
               name="password"
-              label="Password"
-              rules={[{ required: true, message: 'Please input your password!' }]}
+              label={<span style={{ fontWeight: 500 }}>Password</span>}
+              rules={[
+                { required: true, message: 'Please input your password!' },
+                { min: 6, message: 'Password must be at least 6 characters!' }
+              ]}
             >
               <Input.Password
-                prefix={<LockOutlined className="text-gray-400" />}
+                prefix={<LockOutlined style={{ color: '#bfbfbf' }} />}
                 placeholder="Enter your password"
-                className="rounded-lg"
+                autoComplete="current-password"
+                style={{ borderRadius: '8px', padding: '12px' }}
               />
             </Form.Item>
 
-            <div className="flex justify-between items-center mb-6">
-              <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Remember me</Checkbox>
-              </Form.Item>
-              <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700">
-                Forgot password?
-              </Link>
-            </div>
-
-            <Form.Item>
+            <Form.Item style={{ marginBottom: '16px' }}>
               <Button
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                className="w-full h-12 text-base font-medium rounded-lg"
+                block
+                icon={<LoginOutlined />}
                 style={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  height: '50px',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #1890ff, #722ed1)',
                   border: 'none',
+                  boxShadow: '0 4px 12px rgba(24, 144, 255, 0.3)'
                 }}
               >
-                Sign In
+                {loading ? 'Signing In...' : 'Sign In to Admin Panel'}
               </Button>
             </Form.Item>
           </Form>
-        </Card>
-        
-        <div className="text-center mt-6 text-sm text-gray-600">
-          Demo credentials: admin@fashion.com / password123
-        </div>
-      </div>
+
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Text type="secondary" style={{ fontSize: '13px' }}>
+              Secure admin access • Fashion E-commerce Platform
+            </Text>
+            <br />
+            <Text type="secondary" style={{ fontSize: '12px', marginTop: '8px' }}>
+              © 2024 Fashion Admin Panel. All rights reserved.
+            </Text>
+          </div>
+        </Space>
+      </Card>
     </div>
   );
 };

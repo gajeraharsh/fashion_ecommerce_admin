@@ -1,56 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
+  Card,
   Button,
-  Space,
-  Tag,
   Input,
   Select,
-  Card,
-  Avatar,
+  Space,
+  Tag,
   Modal,
   Form,
   message,
+  Avatar,
+  Badge,
+  Drawer,
+  Descriptions,
   Row,
   Col,
   Statistic,
-  DatePicker,
-  Drawer,
-  Descriptions,
-  Timeline,
-  Badge,
-  Tooltip,
-  Progress,
   Switch,
+  Popconfirm,
+  DatePicker,
 } from 'antd';
 import {
-  PlusOutlined,
+  UserOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
+  PlusOutlined,
   EyeOutlined,
-  UserAddOutlined,
-  TeamOutlined,
-  CrownOutlined,
-  ShoppingCartOutlined,
-  DollarOutlined,
   MailOutlined,
   PhoneOutlined,
-  EnvironmentOutlined,
-  CalendarOutlined,
   CheckCircleOutlined,
   CloseCircleOutlined,
-  ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { setUsers, updateUser, deleteUser } from '../../store/slices/userSlice';
+import { RootState, AppDispatch } from '../../store';
+import { fetchUsers, updateUser, deleteUser } from '../../store/slices/userSlice';
+import { User } from '../../services/userService';
 
 const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+interface UserListProps {}
 interface User {
   id: string;
   firstName: string;
@@ -85,7 +77,7 @@ interface User {
 
 const UserList: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { users, loading } = useSelector((state: RootState) => state.users);
   const [searchText, setSearchText] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -197,7 +189,8 @@ const UserList: React.FC = () => {
       },
     ];
 
-    dispatch(setUsers(mockUsers));
+    // For now, we'll use fetchUsers to load real data from the API
+    // dispatch(fetchUsers({}));
   }, [dispatch]);
 
   const getRoleColor = (role: string) => {
@@ -228,8 +221,7 @@ const UserList: React.FC = () => {
 
   const handleSave = async (values: any) => {
     if (selectedUser) {
-      const updatedUser = { ...selectedUser, ...values };
-      dispatch(updateUser(updatedUser));
+      dispatch(updateUser({ id: selectedUser.id, userData: values }));
       message.success('User updated successfully');
       setEditVisible(false);
     }

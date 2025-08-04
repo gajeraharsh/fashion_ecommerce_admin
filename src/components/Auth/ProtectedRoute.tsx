@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { Spin } from 'antd';
 import { RootState } from '../../store';
-import { loginSuccess } from '../../store/slices/authSlice';
+import { AppDispatch } from '../../store';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -25,7 +25,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
         permissions: ['all'],
       };
       
-      dispatch(loginSuccess({ user: mockUser, token }));
+      // User is already authenticated via token validation
     }
   }, [token, isAuthenticated, dispatch]);
 

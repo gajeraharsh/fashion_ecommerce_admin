@@ -2,173 +2,98 @@ import React, { useState, useEffect } from 'react';
 import {
   Table,
   Button,
-  Space,
   Tag,
-  Popconfirm,
   Input,
   Select,
   Card,
   Avatar,
-  Tooltip,
   Badge,
   Dropdown,
   Modal,
-  Form,
   message,
 } from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
   FilterOutlined,
   EyeOutlined,
   MoreOutlined,
-  ShoppingCartOutlined,
-  DollarOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { setProducts, deleteProduct } from '../../store/slices/productSlice';
+import { RootState, AppDispatch } from '../../store';
+import { fetchProducts, fetchProductStats, deleteProductAsync, clearError } from '../../store/slices/productSlice';
 
 const { Search } = Input;
 const { Option } = Select;
 
 const ProductList: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { products, loading } = useSelector((state: RootState) => state.products);
+  const dispatch = useDispatch<AppDispatch>();
+  const { products, loading, error, stats, totalCount } = useSelector((state: RootState) => state.products);
   const [searchText, setSearchText] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
+  // Fetch products and stats on component mount
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockProducts = [
-      {
-        id: '1',
-        name: 'Designer Evening Dress',
-        description: 'Elegant evening dress perfect for special occasions',
-        category: 'Clothing',
-        subcategory: 'Dresses',
-        variants: [
-          {
-            id: 'v1',
-            size: 'M',
-            color: 'Black',
-            sku: 'DED-BLK-M',
-            stock: 15,
-            price: 299.99,
-            discount: 10,
-            images: ['https://images.pexels.com/photos/1021693/pexels-photo-1021693.jpeg?auto=compress&cs=tinysrgb&w=400'],
-          },
-        ],
-        tags: ['evening', 'elegant', 'party'],
-        status: 'live' as const,
-        seo: {
-          title: 'Designer Evening Dress - Fashion Store',
-          description: 'Shop elegant evening dresses for special occasions',
-          url: 'designer-evening-dress',
-        },
-        attributes: {
-          material: 'Silk',
-          fit: 'Slim',
-          fabric: 'Premium',
-        },
-        faqs: [],
-        createdAt: '2024-01-01',
-        updatedAt: '2024-01-05',
-      },
-      {
-        id: '2',
-        name: 'Casual Cotton T-Shirt',
-        description: 'Comfortable cotton t-shirt for everyday wear',
-        category: 'Clothing',
-        subcategory: 'Tops',
-        variants: [
-          {
-            id: 'v2',
-            size: 'L',
-            color: 'White',
-            sku: 'CCT-WHT-L',
-            stock: 25,
-            price: 29.99,
-            discount: 0,
-            images: ['https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=400'],
-          },
-        ],
-        tags: ['casual', 'cotton', 'everyday'],
-        status: 'live' as const,
-        seo: {
-          title: 'Casual Cotton T-Shirt - Fashion Store',
-          description: 'Comfortable cotton t-shirts for daily wear',
-          url: 'casual-cotton-tshirt',
-        },
-        attributes: {
-          material: 'Cotton',
-          fit: 'Regular',
-          fabric: 'Soft',
-        },
-        faqs: [],
-        createdAt: '2024-01-02',
-        updatedAt: '2024-01-06',
-      },
-      {
-        id: '3',
-        name: 'Leather Handbag',
-        description: 'Premium leather handbag with multiple compartments',
-        category: 'Accessories',
-        subcategory: 'Bags',
-        variants: [
-          {
-            id: 'v3',
-            size: 'One Size',
-            color: 'Brown',
-            sku: 'LHB-BRN-OS',
-            stock: 8,
-            price: 199.99,
-            discount: 15,
-            images: ['https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=400'],
-          },
-        ],
-        tags: ['leather', 'handbag', 'premium'],
-        status: 'live' as const,
-        seo: {
-          title: 'Leather Handbag - Fashion Store',
-          description: 'Premium leather handbags with style and functionality',
-          url: 'leather-handbag',
-        },
-        attributes: {
-          material: 'Genuine Leather',
-          fit: 'N/A',
-          fabric: 'Leather',
-        },
-        faqs: [],
-        createdAt: '2024-01-03',
-        updatedAt: '2024-01-07',
-      },
-    ];
+    const filters = {
+      page: currentPage,
+      limit: pageSize,
+      search: searchText || undefined,
+      isActive: statusFilter === 'all' ? undefined : statusFilter === 'live' ? 'true' : 'false',
+      sortBy: 'createdAt',
+      sortOrder: 'desc' as const,
+    };
+    
+    dispatch(fetchProducts(filters));
+    dispatch(fetchProductStats());
+  }, [dispatch, currentPage, pageSize, searchText, statusFilter, categoryFilter]);
 
-    dispatch(setProducts(mockProducts));
+  // Clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
   }, [dispatch]);
 
-  const handleDelete = (id: string) => {
-    dispatch(deleteProduct(id));
-    message.success('Product deleted successfully');
+  // Show error message if there's an error
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await dispatch(deleteProductAsync(id)).unwrap();
+      message.success('Product deleted successfully');
+      // Refresh the list
+      const filters = {
+        page: currentPage,
+        limit: pageSize,
+        search: searchText || undefined,
+        isActive: statusFilter === 'all' ? undefined : statusFilter === 'live' ? 'true' : 'false',
+        sortBy: 'createdAt',
+        sortOrder: 'desc' as const,
+      };
+      dispatch(fetchProducts(filters));
+    } catch (error) {
+      message.error('Failed to delete product');
+    }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'live':
-        return 'green';
-      case 'draft':
-        return 'orange';
-      case 'out_of_stock':
-        return 'red';
-      default:
-        return 'default';
-    }
+  const getStatusColor = (isActive: boolean, stockQuantity: number) => {
+    if (stockQuantity === 0) return 'red';
+    return isActive ? 'green' : 'orange';
+  };
+
+  const getStatusText = (isActive: boolean, stockQuantity: number) => {
+    if (stockQuantity === 0) return 'Out of Stock';
+    return isActive ? 'Active' : 'Inactive';
   };
 
   const columns = [
@@ -179,15 +104,15 @@ const ProductList: React.FC = () => {
         <div className="flex items-center space-x-3">
           <Avatar
             size={60}
-            src={record.variants[0]?.images[0]}
+            src={record.images?.[0]?.url || '/placeholder-product.png'}
             className="rounded-lg"
           />
           <div>
             <div className="font-medium text-gray-900">{record.name}</div>
-            <div className="text-sm text-gray-500">{record.category} • {record.subcategory}</div>
+            <div className="text-sm text-gray-500">{record.category?.name || 'No Category'}</div>
             <div className="flex space-x-1 mt-1">
-              {record.tags.slice(0, 2).map((tag: string) => (
-                <Tag key={tag} size="small">{tag}</Tag>
+              {record.tags?.slice(0, 2).map((tag: string) => (
+                <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
           </div>
@@ -196,21 +121,21 @@ const ProductList: React.FC = () => {
     },
     {
       title: 'SKU',
-      dataIndex: ['variants', 0, 'sku'],
+      dataIndex: 'sku',
       key: 'sku',
-      render: (sku: string) => <span className="font-mono text-sm">{sku}</span>,
+      render: (sku: string) => <span className="font-mono text-sm">{sku || 'N/A'}</span>,
     },
     {
       title: 'Price',
       key: 'price',
       render: (record: any) => {
-        const variant = record.variants[0];
-        const discountedPrice = variant.price - (variant.price * variant.discount / 100);
+        const price = record.price || 0;
+        const comparePrice = record.comparePrice;
         return (
           <div>
-            <div className="font-medium">${discountedPrice.toFixed(2)}</div>
-            {variant.discount > 0 && (
-              <div className="text-sm text-gray-500 line-through">${variant.price.toFixed(2)}</div>
+            <div className="font-medium">${price.toFixed(2)}</div>
+            {comparePrice && comparePrice > price && (
+              <div className="text-sm text-gray-500 line-through">${comparePrice.toFixed(2)}</div>
             )}
           </div>
         );
@@ -220,25 +145,24 @@ const ProductList: React.FC = () => {
       title: 'Stock',
       key: 'stock',
       render: (record: any) => {
-        const stock = record.variants[0]?.stock || 0;
+        const stock = record.stockQuantity || 0;
         return (
-          <Badge
-            count={stock}
-            showZero
-            style={{
-              backgroundColor: stock > 10 ? '#52c41a' : stock > 0 ? '#faad14' : '#ff4d4f',
-            }}
-          />
+          <div className="text-center">
+            <Badge
+              count={stock}
+              showZero
+              style={{ backgroundColor: stock > 10 ? '#52c41a' : stock > 0 ? '#faad14' : '#ff4d4f' }}
+            />
+          </div>
         );
       },
     },
     {
       title: 'Status',
-      dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
-        <Tag color={getStatusColor(status)}>
-          {status.replace('_', ' ').toUpperCase()}
+      render: (record: any) => (
+        <Tag color={getStatusColor(record.isActive, record.stockQuantity)}>
+          {getStatusText(record.isActive, record.stockQuantity)}
         </Tag>
       ),
     },
@@ -253,13 +177,17 @@ const ProductList: React.FC = () => {
                 key: 'view',
                 label: 'View Details',
                 icon: <EyeOutlined />,
-                onClick: () => navigate(`/products/${record.id}`),
+                onClick: () => {
+                  // Add view logic
+                },
               },
               {
                 key: 'edit',
                 label: 'Edit Product',
                 icon: <EditOutlined />,
-                onClick: () => navigate(`/products/edit/${record.id}`),
+                onClick: () => {
+                  navigate(`/products/edit/${record.id}`);
+                },
               },
               {
                 type: 'divider',
@@ -281,7 +209,7 @@ const ProductList: React.FC = () => {
           }}
           trigger={['click']}
         >
-          <Button type="text" icon={<MoreOutlined />} />
+          <Button icon={<MoreOutlined />} />
         </Dropdown>
       ),
     },
@@ -289,9 +217,11 @@ const ProductList: React.FC = () => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchText.toLowerCase()) ||
-                         product.variants[0]?.sku.toLowerCase().includes(searchText.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
-    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                         (product.sku && product.sku.toLowerCase().includes(searchText.toLowerCase()));
+    const matchesStatus = statusFilter === 'all' || 
+                         (statusFilter === 'live' && product.isActive) ||
+                         (statusFilter === 'draft' && !product.isActive);
+    const matchesCategory = categoryFilter === 'all' || product.category?.name === categoryFilter;
     
     return matchesSearch && matchesStatus && matchesCategory;
   });
@@ -318,19 +248,19 @@ const ProductList: React.FC = () => {
         </Card>
         <Card className="text-center">
           <div className="text-2xl font-bold text-green-600">
-            {products.filter(p => p.status === 'live').length}
+            {stats?.activeProducts || products.filter(p => p.isActive).length}
           </div>
-          <div className="text-gray-600">Live Products</div>
+          <div className="text-gray-600">Active Products</div>
         </Card>
         <Card className="text-center">
           <div className="text-2xl font-bold text-orange-600">
-            {products.filter(p => p.status === 'draft').length}
+            {stats?.featuredProducts || products.filter(p => p.isFeatured).length}
           </div>
-          <div className="text-gray-600">Draft Products</div>
+          <div className="text-gray-600">Featured Products</div>
         </Card>
         <Card className="text-center">
           <div className="text-2xl font-bold text-red-600">
-            {products.filter(p => p.variants[0]?.stock === 0).length}
+            {stats?.outOfStockProducts || products.filter(p => p.stockQuantity === 0).length}
           </div>
           <div className="text-gray-600">Out of Stock</div>
         </Card>
@@ -353,9 +283,8 @@ const ProductList: React.FC = () => {
             placeholder="Filter by status"
           >
             <Option value="all">All Status</Option>
-            <Option value="live">Live</Option>
-            <Option value="draft">Draft</Option>
-            <Option value="out_of_stock">Out of Stock</Option>
+            <Option value="live">Active</Option>
+            <Option value="draft">Inactive</Option>
           </Select>
           <Select
             style={{ width: 150 }}
@@ -390,11 +319,19 @@ const ProductList: React.FC = () => {
           rowKey="id"
           loading={loading}
           pagination={{
-            pageSize: 10,
+            current: currentPage,
+            pageSize: pageSize,
+            total: totalCount,
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
               `${range[0]}-${range[1]} of ${total} products`,
+            onChange: (page, size) => {
+              setCurrentPage(page);
+              if (size !== pageSize) {
+                setPageSize(size);
+              }
+            },
           }}
           className="overflow-x-auto"
         />

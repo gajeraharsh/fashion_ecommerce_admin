@@ -1,5 +1,16 @@
-import React from 'react';
-import { Card, Row, Col, Table, Tag, Typography, Select, DatePicker, Input, Button } from 'antd';
+import React from "react";
+import {
+  Card,
+  Row,
+  Col,
+  Table,
+  Tag,
+  Typography,
+  Select,
+  DatePicker,
+  Input,
+  Button,
+} from "antd";
 import {
   SafetyOutlined,
   UserOutlined,
@@ -11,7 +22,7 @@ import {
   SettingOutlined,
   SearchOutlined,
   DownloadOutlined,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -20,86 +31,90 @@ const { RangePicker } = DatePicker;
 const AuditLogs: React.FC = () => {
   const mockLogs = [
     {
-      key: '1',
-      timestamp: '2024-01-07 10:30:45',
-      user: 'admin@fashion.com',
-      action: 'Login',
-      resource: 'Authentication',
-      details: 'Successful login from IP 192.168.1.100',
-      status: 'success',
-      ip: '192.168.1.100',
+      key: "1",
+      timestamp: "2024-01-07 10:30:45",
+      user: "admin@fashion.com",
+      action: "Login",
+      resource: "Authentication",
+      details: "Successful login from IP 192.168.1.100",
+      status: "success",
+      ip: "192.168.1.100",
     },
     {
-      key: '2',
-      timestamp: '2024-01-07 10:32:12',
-      user: 'admin@fashion.com',
-      action: 'Product Update',
-      resource: 'Product #123',
-      details: 'Updated product price from $299.99 to $279.99',
-      status: 'success',
-      ip: '192.168.1.100',
+      key: "2",
+      timestamp: "2024-01-07 10:32:12",
+      user: "admin@fashion.com",
+      action: "Product Update",
+      resource: "Product #123",
+      details: "Updated product price from $299.99 to $279.99",
+      status: "success",
+      ip: "192.168.1.100",
     },
     {
-      key: '3',
-      timestamp: '2024-01-07 10:35:30',
-      user: 'manager@fashion.com',
-      action: 'Order Status Change',
-      resource: 'Order #ORD-001',
+      key: "3",
+      timestamp: "2024-01-07 10:35:30",
+      user: "manager@fashion.com",
+      action: "Order Status Change",
+      resource: "Order #ORD-001",
       details: 'Changed order status from "Processing" to "Shipped"',
-      status: 'success',
-      ip: '192.168.1.101',
+      status: "success",
+      ip: "192.168.1.101",
     },
     {
-      key: '4',
-      timestamp: '2024-01-07 09:15:22',
-      user: 'unknown',
-      action: 'Failed Login',
-      resource: 'Authentication',
-      details: 'Failed login attempt for user admin@fashion.com',
-      status: 'failed',
-      ip: '192.168.1.105',
+      key: "4",
+      timestamp: "2024-01-07 09:15:22",
+      user: "unknown",
+      action: "Failed Login",
+      resource: "Authentication",
+      details: "Failed login attempt for user admin@fashion.com",
+      status: "failed",
+      ip: "192.168.1.105",
     },
     {
-      key: '5',
-      timestamp: '2024-01-07 08:45:10',
-      user: 'admin@fashion.com',
-      action: 'User Creation',
-      resource: 'User Management',
-      details: 'Created new user account for jane.doe@example.com',
-      status: 'success',
-      ip: '192.168.1.100',
+      key: "5",
+      timestamp: "2024-01-07 08:45:10",
+      user: "admin@fashion.com",
+      action: "User Creation",
+      resource: "User Management",
+      details: "Created new user account for jane.doe@example.com",
+      status: "success",
+      ip: "192.168.1.100",
     },
   ];
 
   const getActionIcon = (action: string) => {
     const icons: Record<string, React.ReactNode> = {
-      'Login': <LoginOutlined />,
-      'Logout': <LogoutOutlined />,
-      'Product Update': <EditOutlined />,
-      'Order Status Change': <ShoppingCartOutlined />,
-      'Failed Login': <SafetyOutlined />,
-      'User Creation': <UserOutlined />,
-      'Settings Change': <SettingOutlined />,
-      'Delete': <DeleteOutlined />,
+      Login: <LoginOutlined />,
+      Logout: <LogoutOutlined />,
+      "Product Update": <EditOutlined />,
+      "Order Status Change": <ShoppingCartOutlined />,
+      "Failed Login": <SafetyOutlined />,
+      "User Creation": <UserOutlined />,
+      "Settings Change": <SettingOutlined />,
+      Delete: <DeleteOutlined />,
     };
     return icons[action] || <SettingOutlined />;
   };
 
   const getStatusColor = (status: string) => {
-    return status === 'success' ? 'green' : status === 'failed' ? 'red' : 'orange';
+    return status === "success"
+      ? "green"
+      : status === "failed"
+      ? "red"
+      : "orange";
   };
 
   const columns = [
     {
-      title: 'Timestamp',
-      dataIndex: 'timestamp',
-      key: 'timestamp',
+      title: "Timestamp",
+      dataIndex: "timestamp",
+      key: "timestamp",
       sorter: true,
     },
     {
-      title: 'User',
-      dataIndex: 'user',
-      key: 'user',
+      title: "User",
+      dataIndex: "user",
+      key: "user",
       render: (user: string) => (
         <div className="flex items-center space-x-2">
           <UserOutlined />
@@ -108,9 +123,9 @@ const AuditLogs: React.FC = () => {
       ),
     },
     {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
       render: (action: string) => (
         <div className="flex items-center space-x-2">
           {getActionIcon(action)}
@@ -119,30 +134,28 @@ const AuditLogs: React.FC = () => {
       ),
     },
     {
-      title: 'Resource',
-      dataIndex: 'resource',
-      key: 'resource',
+      title: "Resource",
+      dataIndex: "resource",
+      key: "resource",
     },
     {
-      title: 'Details',
-      dataIndex: 'details',
-      key: 'details',
+      title: "Details",
+      dataIndex: "details",
+      key: "details",
       ellipsis: true,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status: string) => (
-        <Tag color={getStatusColor(status)}>
-          {status.toUpperCase()}
-        </Tag>
+        <Tag color={getStatusColor(status)}>{status.toUpperCase()}</Tag>
       ),
     },
     {
-      title: 'IP Address',
-      dataIndex: 'ip',
-      key: 'ip',
+      title: "IP Address",
+      dataIndex: "ip",
+      key: "ip",
       render: (ip: string) => <code className="text-sm">{ip}</code>,
     },
   ];
@@ -151,8 +164,12 @@ const AuditLogs: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <Title level={2} className="mb-0">Audit Logs</Title>
-          <p className="text-gray-600">Monitor system activity and security events</p>
+          <Title level={2} className="mb-0">
+            Audit Logs
+          </Title>
+          <p className="text-gray-600">
+            Monitor system activity and security events
+          </p>
         </div>
         <Button type="primary" icon={<DownloadOutlined />} size="large">
           Export Logs
@@ -210,7 +227,7 @@ const AuditLogs: React.FC = () => {
             <Option value="failed">Failed</Option>
             <Option value="warning">Warning</Option>
           </Select>
-          <RangePicker placeholder={['Start Date', 'End Date']} />
+          <RangePicker placeholder={["Start Date", "End Date"]} />
           <Button>Apply Filters</Button>
         </div>
       </Card>
@@ -236,7 +253,9 @@ const AuditLogs: React.FC = () => {
           <Card title="Recent Security Events" extra={<SafetyOutlined />}>
             <div className="space-y-3">
               <div className="flex justify-between items-center p-2 bg-red-50 rounded">
-                <span className="text-red-800">Failed login attempts detected</span>
+                <span className="text-red-800">
+                  Failed login attempts detected
+                </span>
                 <Tag color="red">HIGH</Tag>
               </div>
               <div className="flex justify-between items-center p-2 bg-yellow-50 rounded">

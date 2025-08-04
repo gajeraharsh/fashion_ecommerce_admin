@@ -36,7 +36,7 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { addProduct, updateProduct } from '../../store/slices/productSlice';
+import { updateProduct } from '../../store/slices/productSlice';
 
 
 const { Option } = Select;
